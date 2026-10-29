@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>倒數計時器</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f9;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+        .container {
+            display: flex;              /* 讓內容橫排 */
+            align-items: center;        /* 垂直置中 */
+            gap: 30px;                  /* 標題與天數之間留空 */
+        }
+        h1 {
+            font-family: 'Microsoft JhengHei', sans-serif;
+            font-size: 6em;             /* 標題字體大 */
+            font-weight: bold;
+            color: #e63946;
+            text-shadow: 4px 4px 12px #2a9d8f;
+            margin: 0;
+        }
+        #timer {
+            font-family: 'Microsoft JhengHei', sans-serif;
+            font-size: 8em;             /* 天數字體更大 */
+            font-weight: bold;
+            color: #e63946;
+            text-shadow: 5px 5px 15px #2a9d8f;
+            animation: pulse 1.5s infinite;
+        }
+        @keyframes pulse {
+            0%   { transform: rotate(-10deg) scale(1);   color: #e63946; }
+            50%  { transform: rotate(-10deg) scale(1.2); color: #2a9d8f; }
+            100% { transform: rotate(-10deg) scale(1);   color: #e63946; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>距離園遊會還有</h1>
+    <div id="timer"></div>
+</div>
+
+<script>
+    // 設定目標日期與時間
+    const targetDate = new Date("2026-11-15T08:00:00").getTime();
+
+    const countdown = setInterval(() => {
+        const now = new Date().getTime();
+        const distance = targetDate - now;
+
+        if (distance < 0) {
+            clearInterval(countdown);
+            document.getElementById("timer").innerHTML = "時間到！";
+            return;
+        }
+
+        const days = Math.floor(distance / (1000 * 60 * 60 * 24));
+        const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+
+        document.getElementById("timer").innerHTML = `✨${days} 天✨`;
+    }, 1000);
+</script>
+
+</body>
+</html>
