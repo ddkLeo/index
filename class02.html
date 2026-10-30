@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8">
+  <title>教室案內</title>
+  <style>
+    body {
+      background: #111;
+      color: #fff;
+      font-family: 'Microsoft JhengHei', sans-serif;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      margin: 0;
+    }
+
+    /* 教室案內標題 */
+    .title {
+      font-size: 10vw;   /* 使用相對單位，會依螢幕寬度自動縮放 */
+      font-weight: bold;
+      position: relative;
+      color: #fff;
+      text-shadow: 0 0 20px #ff4d6d, 0 0 40px #ff4d6d;
+      overflow: hidden;
+      white-space: nowrap; /* 避免換行 */
+    }
+    .title::before {
+      content: "教室案內";
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(120deg, transparent, rgba(255,255,255,0.8), transparent);
+      -webkit-background-clip: text;
+      color: transparent;
+      animation: shine 2s infinite;
+    }
+    @keyframes shine {
+      0%   { left: -100%; }
+      50%  { left: 100%; }
+      100% { left: 100%; }
+    }
+
+    /* 分班資訊 */
+    .info {
+      margin-top: 40px;
+      font-size: 5vw;   /* 同樣用相對單位，避免被切掉 */
+      font-weight: bold;
+      animation: colorChange 3s infinite alternate;
+      text-align: center;
+    }
+    @keyframes colorChange {
+      0%   { color: #ff5722; }
+      25%  { color: #4caf50; }
+      50%  { color: #2196f3; }
+      75%  { color: #9c27b0; }
+      100% { color: #ffc107; }
+    }
+
+    .line {
+      margin: 15px 0;
+    }
+  </style>
+</head>
+<body>
+  <div class="title">教室案內</div>
+  <div class="info">
+    <div class="line">✨ 少年展力隊 → 4F</div>
+    <div class="line">💃 舞蹈班 → 5F</div>
+    <div class="line">🎶 陶笛班 → 6F</div>
+    <div class="line">🎣 釣竿／幼兒啟蒙 → 7F</div>
+  </div>
+</body>
+</html>
