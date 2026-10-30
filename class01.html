@@ -18,12 +18,13 @@
 
     /* 教室案內標題 */
     .title {
-      font-size: 6em;
+      font-size: 12vw;   /* 使用相對單位，會依螢幕寬度自動縮放 */
       font-weight: bold;
       position: relative;
       color: #fff;
       text-shadow: 0 0 20px #ff4d6d, 0 0 40px #ff4d6d;
       overflow: hidden;
+      white-space: nowrap; /* 避免換行 */
     }
     .title::before {
       content: "教室案內";
@@ -46,9 +47,10 @@
     /* 分班資訊 */
     .info {
       margin-top: 40px;
-      font-size: 3em;
+      font-size: 8vw;   /* 同樣用相對單位，避免被切掉 */
       font-weight: bold;
       animation: colorChange 3s infinite alternate;
+      text-align: center;
     }
     @keyframes colorChange {
       0%   { color: #ff5722; }
@@ -65,6 +67,7 @@
 </head>
 <body>
   <div class="title">教室案內</div>
+  <div style="height:80px;"></div>
   <div class="info">
     <div class="line">✨ 少年展力隊 → 4F</div>
     <div class="line">💃 舞蹈班 → 5F</div>
