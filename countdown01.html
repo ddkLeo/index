@@ -10,26 +10,61 @@
     <style>
         body {
             font-family: 'Ma Shan Zheng', cursive; /* 使用 Ma Shan Zheng 字體 */
-            background-color: #DEB887; /* 土黃色背景 (BurlyWood) */
+            /* 沙畫/潑墨暈開的動態漸層背景 */
+            background: linear-gradient(135deg, #DEB887, #ffffff, #DEB887, #f4ebd0);
+            background-size: 400% 400%;
+            animation: inkFlow 12s ease infinite; /* 背景暈開動畫 */
             display: flex;
             justify-content: center;
             align-items: center;
             height: 100vh;
             margin: 0;
+            overflow: hidden;
         }
+
+        /* 背景流動暈開動畫 */
+        @keyframes inkFlow {
+            0% {
+                background-position: 0% 50%;
+            }
+            50% {
+                background-position: 100% 50%;
+            }
+            100% {
+                background-position: 0% 50%;
+            }
+        }
+
         .container {
             display: flex;              /* 橫排 */
             align-items: center;        /* 垂直置中 */
             gap: 40px;                  /* 標題與天數之間留空 */
         }
+
         h1 {
             font-size: 8em;             /* 標題字體大 */
             font-weight: bold;
-            color: #8B0000;             /* 深紅色，搭配土黃色背景 */
+            color: #8B0000;             /* 深紅色 */
             text-shadow: 4px 4px 12px #2a9d8f;
             margin: 0;
-            animation: glow 2s infinite alternate;
+            
+            /* 預設隱藏，延遲 2 秒後開始淡入並維持顯示 */
+            opacity: 0;
+            animation: fadeInText 1.5s ease 2s forwards, glow 2s infinite alternate;
         }
+
+        /* 標題延遲出現與淡入動畫 */
+        @keyframes fadeInText {
+            0% {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+            100% {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
         #timer {
             font-size: 12em;             /* 天數字體更大 */
             font-weight: bold;
@@ -37,11 +72,13 @@
             text-shadow: 5px 5px 15px #2a9d8f;
             animation: pulse 1.5s infinite;
         }
+
         @keyframes pulse {
             0%   { transform: rotate(-10deg) scale(1);   color: #8B0000; }
             50%  { transform: rotate(-10deg) scale(1.2); color: #2a9d8f; }
             100% { transform: rotate(-10deg) scale(1);   color: #8B0000; }
         }
+
         @keyframes glow {
             0%   { text-shadow: 0 0 10px #ff4d6d, 0 0 20px #ff4d6d; }
             100% { text-shadow: 0 0 20px #2a9d8f, 0 0 40px #2a9d8f; }
