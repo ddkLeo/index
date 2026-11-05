@@ -19,7 +19,7 @@
             color: #ffffff;
         }
 
-        /* 改用直接載入 GIF 背景 */
+        /* 背景圖片層 */
         #shared-bg {
             position: fixed;
             top: 0;
@@ -29,9 +29,8 @@
             background-size: cover;
             background-position: center;
             background-repeat: no-repeat;
-            /* 請在下方 url() 內填入你的 GIF 圖片網址 */
-            background-image: url('https://ddkleo.github.io/index/dpages01/GIF02.gif');
             z-index: -2;
+            transition: background-image 1s ease-in-out; /* 背景切換時加入 1 秒漸變特效 */
         }
 
         .bg-overlay {
@@ -40,7 +39,7 @@
             left: 0;
             width: 2160px;
             height: 3840px;
-            background: rgba(0, 0, 0, 0.45); /* 半透明遮罩，可讓白字在 GIF 背景上更清晰 */
+            background: rgba(0, 0, 0, 0.45); /* 半透明遮罩，確保文字清晰 */
             z-index: -1;
         }
 
@@ -154,6 +153,35 @@
         </div>
         </div>
     </div>
+
+    <script>
+        // 在這裡放入你的多個 GIF 圖片網址（想放幾個都可以）
+        const gifList = [
+            'https://ddkleo.github.io/index/dpages01/GIF02.gif',
+            'https://ddkleo.github.io/index/dpages01/GIF21.gif',
+            'https://ddkleo.github.io/index/dpages01/GIF00.gif',
+            'https://ddkleo.github.io/index/dpages01/GIF01.gif',
+            'https://ddkleo.github.io/index/dpages01/GIF03.gif',
+            'https://ddkleo.github.io/index/dpages01/GIF11.gif',
+            'https://ddkleo.github.io/index/dpages01/GIF31.gif'
+        ];
+
+        function setRandomBackground() {
+            const sharedBg = document.getElementById('shared-bg');
+            if (gifList.length > 0) {
+                // 隨機挑選其中一個 GIF
+                const randomIndex = Math.floor(Math.random() * gifList.length);
+                const selectedGif = gifList[randomIndex];
+                sharedBg.style.backgroundImage = `url(${selectedGif})`;
+            }
+        }
+
+        // 頁面載入時隨機套用一個背景
+        setRandomBackground();
+
+        // 【選填】如果你希望電子看板開著不動時，每隔一段時間（例如 10 分鐘）自動再隨機換另一個 GIF 背景，可以取消下面這行的註解：
+        // setInterval(setRandomBackground, 600000); // 600000 毫秒 = 10 分鐘
+    </script>
 
 </body>
 </html>
