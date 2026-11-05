@@ -19,7 +19,7 @@
             color: #ffffff;
         }
 
-        /* 自動同步背景圖片層 */
+        /* 改用直接載入 GIF 背景 */
         #shared-bg {
             position: fixed;
             top: 0;
@@ -29,9 +29,9 @@
             background-size: cover;
             background-position: center;
             background-repeat: no-repeat;
-            background-image: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
+            /* 請在下方 url() 內填入你的 GIF 圖片網址 */
+            background-image: url('https://ddkleo.github.io/index/dpages01/GIF02.gif');
             z-index: -2;
-            transition: background-image 0.4s ease;
         }
 
         .bg-overlay {
@@ -40,7 +40,7 @@
             left: 0;
             width: 2160px;
             height: 3840px;
-            background: rgba(0, 0, 0, 0.45);
+            background: rgba(0, 0, 0, 0.45); /* 半透明遮罩，可讓白字在 GIF 背景上更清晰 */
             z-index: -1;
         }
 
@@ -65,7 +65,7 @@
             padding: 100px 80px;
             border-radius: 50px;
             width: 100%;
-            max-width: 1700px; /* 適合大看板的寬度比例 */
+            max-width: 1700px;
             box-shadow: 0 40px 80px rgba(0, 0, 0, 0.6);
         }
 
@@ -152,26 +152,8 @@
 	    <br></br>
 
         </div>
+        </div>
     </div>
 
-    <script>
-        function syncBackground() {
-            const savedBg = localStorage.getItem('mobile_custom_bg');
-            const sharedBg = document.getElementById('shared-bg');
-            if (savedBg) {
-                sharedBg.style.backgroundImage = `url(${savedBg})`;
-            } else {
-                sharedBg.style.backgroundImage = 'linear-gradient(135deg, #1e293b 0%, #0f172a 100%)';
-            }
-        }
-
-        window.addEventListener('storage', function(e) {
-            if (e.key === 'mobile_custom_bg') {
-                syncBackground();
-            }
-        });
-
-        syncBackground();
-    </script>
 </body>
 </html>
