@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>手機背景管理器</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+        body, html {
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            background-color: #0f172a;
+        }
+
+        /* 專為手機比例優化的背景層 */
+        #bg-container {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            background-image: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
+            transition: background-image 0.4s ease;
+        }
+
+        .overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.4);
+        }
+
+        /* 手機底部懸浮控制按鈕 */
+        .control-panel {
+            position: fixed;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            padding: 10px 20px;
+            border-radius: 30px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.4);
+            border: 1px solid rgba(255, 255, 255, 0.25);
+            z-index: 10;
+            width: 90%;
+            max-width: 320px;
+            justify-content: center;
+        }
+
+        .btn-upload {
+            background: #ffffff;
+            color: #0f172a;
+            padding: 10px 16px;
+            border-radius: 20px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            border: none;
+            flex: 1;
+            text-align: center;
+        }
+
+        .btn-reset {
+            background: transparent;
+            color: #fff;
+            padding: 10px 12px;
+            border-radius: 20px;
+            font-size: 13px;
+            cursor: pointer;
+            border: 1px solid rgba(255,255,255,0.4);
+        }
+
+        #file-input {
+            display: none;
+        }
+
+        .hint-text {
+            position: fixed;
+            top: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            color: rgba(255, 255, 255, 0.7);
+            font-size: 13px;
+            background: rgba(0,0,0,0.3);
+            padding: 6px 14px;
+            border-radius: 20px;
+            backdrop-filter: blur(5px);
+            letter-spacing: 1px;
+        }
+    </style>
+</head>
+<body>
+
+    <div id="bg-container"></div>
+    <div class="overlay"></div>
+
+    <div class="hint-text">背景控制頁面</div>
+
+    <div class="control-panel">
+        <label for="file-input" class="btn-upload">更換背景圖片</label>
+        <input type="file" id="file-input" accept="image/*">
+        <button class="btn-reset" id="reset-btn">重置</button>
+    </div>
+
+    <script>
+        const bgContainer = document.getElementById('bg-container');
+        const fileInput = document.getElementById('file-input');
+        const resetBtn = document.getElementById('reset-btn');
+
+        function loadSavedBackground() {
+            const savedBg = localStorage.getItem('mobile_custom_bg');
+            if (savedBg) {
+                bgContainer.style.backgroundImage = `url(${savedBg})`;
+            }
+        }
+
+        fileInput.addEventListener('change', function(e) {
+            const file = e.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(event) {
+                    const base64String = event.target.result;
+                    localStorage.setItem('mobile_custom_bg', base64String);
+                    bgContainer.style.backgroundImage = `url(${base64String})`;
+                };
+                reader.readAsDataURL(file);
+            }
+        });
+
+        resetBtn.addEventListener('click', function() {
+            localStorage.removeItem('mobile_custom_bg');
+            bgContainer.style.backgroundImage = 'linear-gradient(135deg, #1e293b 0%, #0f172a 100%)';
+        });
+
+        window.addEventListener('storage', function(e) {
+            if (e.key === 'mobile_custom_bg') {
+                loadSavedBackground();
+            }
+        });
+
+        loadSavedBackground();
+    </script>
+</body>
+</html>
