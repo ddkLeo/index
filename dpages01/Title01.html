@@ -2,8 +2,8 @@
 <html lang="zh-Hant">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>字體主題頁</title>
+    <meta name="viewport" content="width=2160, height=3840, initial-scale=1.0">
+    <title>教室案內 - 數位看板</title>
     <style>
         * {
             box-sizing: border-box;
@@ -12,8 +12,8 @@
         }
 
         body, html {
-            width: 100%;
-            height: 100%;
+            width: 2160px;
+            height: 3840px;
             overflow: hidden;
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
             color: #ffffff;
@@ -24,8 +24,8 @@
             position: fixed;
             top: 0;
             left: 0;
-            width: 100%;
-            height: 100%;
+            width: 2160px;
+            height: 3840px;
             background-size: cover;
             background-position: center;
             background-repeat: no-repeat;
@@ -38,42 +38,43 @@
             position: fixed;
             top: 0;
             left: 0;
-            width: 100%;
-            height: 100%;
+            width: 2160px;
+            height: 3840px;
             background: rgba(0, 0, 0, 0.45);
             z-index: -1;
         }
 
-        /* 手機直向滿版置中容器 */
+        /* 電子看板直向滿版置中容器 */
         .container {
             display: flex;
             flex-direction: column;
             justify-content: center;
             align-items: center;
-            height: 100vh;
-            padding: 20px;
+            width: 2160px;
+            height: 3840px;
+            padding: 120px;
             text-align: center;
         }
 
-        /* 專為手機比例設計的毛玻璃卡片 */
+        /* 專為 2160x3840 比例設計的大型毛玻璃卡片 */
         .content-card {
             background: rgba(255, 255, 255, 0.07);
-            backdrop-filter: blur(18px);
-            -webkit-backdrop-filter: blur(18px);
-            border: 1px solid rgba(255, 255, 255, 0.18);
-            padding: 40px 24px;
-            border-radius: 24px;
+            backdrop-filter: blur(24px);
+            -webkit-backdrop-filter: blur(24px);
+            border: 2px solid rgba(255, 255, 255, 0.18);
+            padding: 100px 80px;
+            border-radius: 50px;
             width: 100%;
-            max-width: 380px; /* 精準符合手機寬度，不破版 */
-            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5);
+            max-width: 1700px; /* 適合大看板的寬度比例 */
+            box-shadow: 0 40px 80px rgba(0, 0, 0, 0.6);
         }
 
         /* === 字體變化 1：流動漸層大標題 === */
         .title-gradient {
-            font-size: 8rem;
+            font-size: 360px;
             font-weight: 900;
-            letter-spacing: 1.5px;
-            margin-bottom: 15px;
+            letter-spacing: 4px;
+            margin-bottom: 40px;
             background: linear-gradient(135deg, #38bdf8, #818cf8, #c084fc);
             background-size: 200% auto;
             -webkit-background-clip: text;
@@ -90,24 +91,29 @@
 
         /* === 字體變化 2：柔和霓虹發光副標題 === */
         .subtitle-neon {
-            font-size: 1.1rem;
+            font-size: 45px;
             font-weight: 400;
-            letter-spacing: 3px;
+            letter-spacing: 6px;
             color: #f1f5f9;
-            margin-bottom: 25px;
-            text-shadow: 0 0 10px rgba(56, 189, 248, 0.6),
-                         0 0 20px rgba(56, 189, 248, 0.3);
+            margin-bottom: 60px;
+            text-shadow: 0 0 15px rgba(56, 189, 248, 0.6),
+                         0 0 30px rgba(56, 189, 248, 0.3);
         }
 
         /* === 字體變化 3：精緻內文排版 === */
         .description {
-            font-size: 2rem;
-            line-height: 1.7;
+            font-size: 160px;
+            line-height: 1.8;
             color: #cbd5e1;
             font-weight: 300;
-            letter-spacing: 0.8px;
-            border-top: 1px solid rgba(255, 255, 255, 0.15);
-            padding-top: 20px;
+            letter-spacing: 2px;
+            border-top: 2px solid rgba(255, 255, 255, 0.15);
+            padding-top: 40px;
+            margin-top: 40px;
+        }
+
+        .description:first-of-type {
+            border-top: 2px solid rgba(255, 255, 255, 0.15);
         }
     </style>
 </head>
@@ -119,24 +125,31 @@
     <div class="container">
         <div class="content-card">
             <!-- 這裡隨時可以修改文字內容 -->
+            
+	    <br></br>
+            <br></br>
+	    <br></br>
             <h1 class="title-gradient">教室案內</h1>
-            <h2 class="subtitle-neon"></h2>
-            <p class="description">
-                少年展力隊 → 4F/7F
-            </p>
-	    <p class="description">
-                舞蹈班 → 5F
-            </p>
-	    <p class="description">
-                陶笛班 → 6F
-            </p>
-	    <p class="description">
-                釣竿/幼兒啟蒙 → 7F
-            </p>
+	    <br></br>
 
-            <br><br/>
-	    <br><br/>
-	    <br><br/>
+            <h2 class="subtitle-neon"></h2>
+            
+            <div class="description">
+                少年展力隊 → 4F / 7F
+            </div>
+            <div class="description">
+                舞蹈班 → 5F
+            </div>
+            <div class="description">
+                陶笛班 → 6F
+            </div>
+            <div class="description">
+                釣竿 / 幼兒啟蒙 → 7F
+            </div>
+            <div class="description">
+            </div>
+            <br></br>
+	    <br></br>
 
         </div>
     </div>
