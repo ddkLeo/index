@@ -27,8 +27,8 @@
         /* 背景微光裝飾 */
         .bg-glow {
             position: absolute;
-            width: 800px;
-            height: 800px;
+            width: 900px;
+            height: 900px;
             background: radial-gradient(circle, rgba(0, 243, 255, 0.08) 0%, rgba(112, 0, 255, 0) 70%);
             border-radius: 50%;
             z-index: 0;
@@ -39,7 +39,7 @@
         .dashboard {
             position: relative;
             z-index: 1;
-            width: 2000px;
+            width: 2040px;
             height: 1160px;
             background: rgba(255, 255, 255, 0.02);
             border: 1px solid rgba(255, 255, 255, 0.08);
@@ -47,9 +47,9 @@
             -webkit-backdrop-filter: blur(25px);
             border-radius: 40px;
             display: grid;
-            grid-template-columns: 550px 1fr 550px;
+            grid-template-columns: 420px 1fr 420px;
             align-items: center;
-            padding: 60px 80px;
+            padding: 50px 60px;
             box-shadow: 0 30px 100px rgba(0, 0, 0, 0.6), inset 0 1px 0 rgba(255, 255, 255, 0.1);
         }
 
@@ -57,14 +57,14 @@
         .side-panel {
             display: flex;
             flex-direction: column;
-            gap: 40px;
+            gap: 30px;
         }
 
         .card {
             background: rgba(255, 255, 255, 0.03);
             border: 1px solid rgba(255, 255, 255, 0.06);
-            border-radius: 24px;
-            padding: 40px;
+            border-radius: 20px;
+            padding: 30px 25px;
             backdrop-filter: blur(10px);
             position: relative;
             overflow: hidden;
@@ -82,25 +82,25 @@
         }
 
         .card-title {
-            font-size: 20px;
-            letter-spacing: 3px;
+            font-size: 16px;
+            letter-spacing: 2px;
             color: #8b9bb4;
             text-transform: uppercase;
-            margin-bottom: 12px;
+            margin-bottom: 8px;
         }
 
         .card-value {
-            font-size: 48px;
+            font-size: 60px;
             font-weight: 600;
             letter-spacing: 1px;
             color: #ffffff;
-            text-shadow: 0 0 20px rgba(255, 255, 255, 0.3);
+            text-shadow: 0 0 15px rgba(255, 255, 255, 0.3);
         }
 
         .card-sub {
-            font-size: 22px;
+            font-size: 30px;
             color: #00f3ff;
-            margin-top: 8px;
+            margin-top: 6px;
             letter-spacing: 1px;
         }
 
@@ -113,28 +113,50 @@
             position: relative;
         }
 
+        /* 倒數計時頂部標籤 */
+        .countdown-banner {
+            position: absolute;
+            top: -70px;
+            background: rgba(0, 243, 255, 0.08);
+            border: 1px solid rgba(0, 243, 255, 0.3);
+            padding: 12px 35px;
+            border-radius: 50px;
+            font-size: 22px;
+            letter-spacing: 3px;
+            color: #00f3ff;
+            box-shadow: 0 0 20px rgba(0, 243, 255, 0.15);
+            backdrop-filter: blur(10px);
+        }
+
+        .countdown-banner span {
+            color: #ff0055;
+            font-weight: 700;
+            font-size: 40px; /* 倒數天數字體大小 */
+            margin: 0 6px;
+            text-shadow: 0 0 10px #ff0055;
+        }
+
         /* 古典未來風圓形時鐘 */
         .clock-face {
-            width: 650px;
-            height: 650px;
+            width: 760px;
+            height: 760px;
             border-radius: 50%;
             background: radial-gradient(circle, rgba(18, 24, 38, 0.8) 0%, rgba(5, 7, 10, 0.95) 100%);
-            border: 2px solid rgba(0, 243, 255, 0.3);
-            box-shadow: 0 0 50px rgba(0, 243, 255, 0.15), inset 0 0 40px rgba(0, 0, 0, 0.8);
+            border: 2px solid rgba(0, 243, 255, 0.4);
+            box-shadow: 0 0 60px rgba(0, 243, 255, 0.2), inset 0 0 50px rgba(0, 0, 0, 0.8);
             position: relative;
             display: flex;
             justify-content: center;
             align-items: center;
         }
 
-        /* 外環裝飾刻度 */
         .clock-face::after {
             content: '';
             position: absolute;
-            width: 620px;
-            height: 620px;
+            width: 720px;
+            height: 720px;
             border-radius: 50%;
-            border: 1px dashed rgba(255, 255, 255, 0.1);
+            border: 1px dashed rgba(255, 255, 255, 0.12);
             animation: rotateBg 120s linear infinite;
         }
 
@@ -143,33 +165,16 @@
             to { transform: rotate(360deg); }
         }
 
-        /* 刻度點/線 */
-        .marker {
-            position: absolute;
-            width: 100%;
-            height: 100%;
-            text-align: center;
-        }
-        .marker span {
-            display: inline-block;
-            position: absolute;
-            font-size: 24px;
-            color: rgba(255, 255, 255, 0.4);
-            font-weight: 300;
-        }
-
-        /* 中心軸心 */
         .center-dot {
-            width: 18px;
-            height: 18px;
+            width: 22px;
+            height: 22px;
             background: #00f3ff;
             border-radius: 50%;
             position: absolute;
             z-index: 10;
-            box-shadow: 0 0 15px #00f3ff, 0 0 30px #00f3ff;
+            box-shadow: 0 0 20px #00f3ff, 0 0 40px #00f3ff;
         }
 
-        /* 指針基礎樣式 */
         .hand {
             position: absolute;
             bottom: 50%;
@@ -179,54 +184,49 @@
             z-index: 5;
         }
 
-        /* 時針 */
         .hour-hand {
-            width: 8px;
-            height: 160px;
+            width: 10px;
+            height: 190px;
             background: linear-gradient(to top, #ffffff, #8b9bb4);
             transform: translateX(-50%) rotate(0deg);
-            box-shadow: 0 0 10px rgba(255, 255, 255, 0.2);
+            box-shadow: 0 0 12px rgba(255, 255, 255, 0.3);
         }
 
-        /* 分針 */
         .minute-hand {
-            width: 6px;
-            height: 230px;
+            width: 7px;
+            height: 275px;
             background: linear-gradient(to top, #00f3ff, #0066ff);
             transform: translateX(-50%) rotate(0deg);
-            box-shadow: 0 0 15px rgba(0, 243, 255, 0.4);
+            box-shadow: 0 0 18px rgba(0, 243, 255, 0.5);
         }
 
-        /* 秒針 */
         .second-hand {
-            width: 2px;
-            height: 260px;
+            width: 3px;
+            height: 310px;
             background: #ff0055;
             transform: translateX(-50%) rotate(0deg);
             z-index: 6;
-            box-shadow: 0 0 15px #ff0055;
+            box-shadow: 0 0 18px #ff0055;
         }
         
-        /* 秒針尾巴平衡桿 */
         .second-hand::after {
             content: '';
             position: absolute;
-            bottom: -30px;
+            bottom: -35px;
             left: -3px;
-            width: 8px;
-            height: 40px;
+            width: 9px;
+            height: 45px;
             background: #ff0055;
             border-radius: 4px;
         }
 
-        /* 數位時間大字顯現 */
         .digital-time {
-            margin-top: 50px;
-            font-size: 72px;
+            margin-top: 35px;
+            font-size: 84px;
             font-weight: 300;
-            letter-spacing: 6px;
+            letter-spacing: 8px;
             color: #ffffff;
-            text-shadow: 0 0 30px rgba(0, 243, 255, 0.3);
+            text-shadow: 0 0 80px rgba(0, 243, 255, 0.4);
             font-variant-numeric: tabular-nums;
         }
     </style>
@@ -240,56 +240,57 @@
         <div class="side-panel">
             <div class="card">
                 <div class="card-title">Current Date</div>
-                <div class="card-value" id="date-display">2026.11.07</div>
-                <div class="card-sub" id="weekday-display">星期六 Saturday</div>
+                <div class="card-value" id="date-display">----.--.--</div>
+                <div class="card-sub" id="weekday-display">載入中...</div>
             </div>
             <div class="card" style="border-left-color: #7000ff;">
                 <div class="card-title">System Status</div>
-                <div class="card-value" style="font-size: 32px;">ONLINE</div>
+                <div class="card-value" style="font-size: 40px;">ONLINE</div>                               
                 <div class="card-sub" style="color: #a78bfa;">SECURE LINK ACTIVE</div>
             </div>
         </div>
 
         <!-- 中央時鐘 -->
         <div class="clock-container">
+         <div class="countdown-banner">
+         	 ❄️ 寒冬送暖園遊會 倒數 <span>08</span> 天 ❄️
+       	 </div>
+         <br></br>
+
             <div class="clock-face">
-                <!-- 刻度與數字 (簡化以 12, 3, 6, 9 為主軸展現古典未來感) -->
                 <div class="center-dot"></div>
-                <!-- 指針 -->
                 <div class="hand hour-hand" id="hour-hand"></div>
                 <div class="hand minute-hand" id="minute-hand"></div>
                 <div class="hand second-hand" id="second-hand"></div>
             </div>
-            <div class="digital-time" id="digital-time">08:15:00</div>
+            <div class="digital-time" id="digital-time">00:00:00</div>
         </div>
 
-        <!-- 右側面板：天氣資訊 -->
+        <!-- 右側面板：真實天氣資訊 -->
         <div class="side-panel">
             <div class="card" style="border-left-color: #00ff66;">
-                <div class="card-title">Weather Condition</div>
-                <div class="card-value" id="weather-temp">24°C</div>
-                <div class="card-sub" id="weather-desc">晴時多雲 · 舒適</div>
+                <div class="card-title" id="location-title">Weather Condition</div>
+                <div class="card-value" id="weather-temp">--°C</div>
+                <div class="card-sub" id="weather-desc">氣象資料讀取中...</div>
             </div>
             <div class="card" style="border-left-color: #ffaa00;">
                 <div class="card-title">Environment</div>
-                <div class="card-value" style="font-size: 36px;" id="weather-humidity">濕度 68%</div>
-                <div class="card-sub" style="color: #ffaa00;">空氣品質：良好 (AQI 32)</div>
+                <div class="card-value" style="font-size: 80px;" id="weather-humidity">濕度 --%</div>            
+                <div class="card-sub" style="color: #ffaa00;" id="weather-aqi">空氣品質：同步中</div>
             </div>
         </div>
     </div>
 
     <script>
-        // 時鐘與日期邏輯
+
+ // 1. 時鐘與日期更新邏輯 (自動對應當前系統時間)
         function updateClock() {
             const now = new Date();
-            
-            // 時間計算
             const hours = now.getHours();
             const minutes = now.getMinutes();
             const seconds = now.getSeconds();
             const milliseconds = now.getMilliseconds();
 
-            // 指針角度計算（加入毫秒使秒針滑動更流暢）
             const secondDeg = ((seconds + milliseconds / 1000) / 60) * 360;
             const minuteDeg = ((minutes + seconds / 60) / 60) * 360;
             const hourDeg = (((hours % 12) + minutes / 60) / 12) * 360;
@@ -298,13 +299,11 @@
             document.getElementById('minute-hand').style.transform = `translateX(-50%) rotate(${minuteDeg}deg)`;
             document.getElementById('hour-hand').style.transform = `translateX(-50%) rotate(${hourDeg}deg)`;
 
-            // 數位時鐘顯示
             const hStr = String(hours).padStart(2, '0');
             const mStr = String(minutes).padStart(2, '0');
             const sStr = String(seconds).padStart(2, '0');
             document.getElementById('digital-time').innerText = `${hStr}:${mStr}:${sStr}`;
 
-// 日期與星期更新
             const year = now.getFullYear();
             const month = String(now.getMonth() + 1).padStart(2, '0');
             const day = String(now.getDate()).padStart(2, '0');
@@ -317,8 +316,44 @@
         setInterval(updateClock, 50);
         updateClock();
 
-        // 模擬氣象更新（若需串接真實 API 可在此替換 fetch 邏輯）
-        // 目前呈現高科技看板風格的預設數值
+        // 2. 自動抓取真實天氣邏輯 (使用 Open-Meteo 免費氣象 API)
+        async function fetchWeather() {
+            try {
+                // 預設抓取台灣苗栗/中部地區座標（若您的看板固定在特定地點，可直接修改 lat 與 lon）
+                // 苗栗座標範例: 24.56, 120.82 (若希望自動抓瀏覽器所在位置，可改用 navigator.geolocation)
+                const lat = 24.56;
+                const lon = 120.82;
+
+                const response = await fetch(`https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current=temperature_2m,relative_humidity_2m,weather_code`);
+                const data = await response.json();
+
+                const temp = Math.round(data.current.temperature_2m);
+                const humidity = data.current.relative_humidity_2m;
+                const weatherCode = data.current.weather_code;
+
+                // WMO 天氣代碼轉換為中文描述
+                function getWeatherDescription(code) {
+                    if (code === 0) return "晴朗 · 舒適";
+                    if (code >= 1 && code <= 3) return "晴時多雲 · 宜人";
+                    if (code >= 45 && code <= 48) return "多霧 · 能見度低";
+                    if (code >= 51 && code <= 67) return "陣雨 · 建議攜帶雨具";
+                    if (code >= 71 && code <= 77) return "降雪";
+                    if (code >= 95) return "雷雨交加";
+                    return "陰天 · 舒適";
+                }
+
+                document.getElementById('weather-temp').innerText = `${temp}°C`;
+                document.getElementById('weather-desc').innerText = getWeatherDescription(weatherCode);
+                document.getElementById('weather-humidity').innerText = `濕度 ${humidity}%`;
+                document.getElementById('location-title').innerText = "Weather (Miaoli)";
+            } catch (error) {
+                console.log("氣象資料載入失敗，維持預設顯示");
+            }
+        }
+
+        // 頁面開啟時抓取一次，之後每 30 分鐘自動更新一次天氣
+        fetchWeather();
+        setInterval(fetchWeather, 30 * 60 * 1000);
     </script>
 </body>
 </html>
