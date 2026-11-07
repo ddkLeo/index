@@ -1,0 +1,324 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cyber Clock & Weather</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            width: 2160px;
+            height: 1280px;
+            background: radial-gradient(circle at center, #121826 0%, #05070a 100%);
+            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            color: #ffffff;
+            overflow: hidden;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            position: relative;
+        }
+
+        /* 背景微光裝飾 */
+        .bg-glow {
+            position: absolute;
+            width: 800px;
+            height: 800px;
+            background: radial-gradient(circle, rgba(0, 243, 255, 0.08) 0%, rgba(112, 0, 255, 0) 70%);
+            border-radius: 50%;
+            z-index: 0;
+            pointer-events: none;
+        }
+
+        /* 主容器：毛玻璃面板 */
+        .dashboard {
+            position: relative;
+            z-index: 1;
+            width: 2000px;
+            height: 1160px;
+            background: rgba(255, 255, 255, 0.02);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            backdrop-filter: blur(25px);
+            -webkit-backdrop-filter: blur(25px);
+            border-radius: 40px;
+            display: grid;
+            grid-template-columns: 550px 1fr 550px;
+            align-items: center;
+            padding: 60px 80px;
+            box-shadow: 0 30px 100px rgba(0, 0, 0, 0.6), inset 0 1px 0 rgba(255, 255, 255, 0.1);
+        }
+
+        /* 側邊資訊區塊通用樣式 */
+        .side-panel {
+            display: flex;
+            flex-direction: column;
+            gap: 40px;
+        }
+
+        .card {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            border-radius: 24px;
+            padding: 40px;
+            backdrop-filter: blur(10px);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 4px;
+            height: 100%;
+            background: #00f3ff;
+            box-shadow: 0 0 15px #00f3ff;
+        }
+
+        .card-title {
+            font-size: 20px;
+            letter-spacing: 3px;
+            color: #8b9bb4;
+            text-transform: uppercase;
+            margin-bottom: 12px;
+        }
+
+        .card-value {
+            font-size: 48px;
+            font-weight: 600;
+            letter-spacing: 1px;
+            color: #ffffff;
+            text-shadow: 0 0 20px rgba(255, 255, 255, 0.3);
+        }
+
+        .card-sub {
+            font-size: 22px;
+            color: #00f3ff;
+            margin-top: 8px;
+            letter-spacing: 1px;
+        }
+
+        /* 中央時鐘區塊 */
+        .clock-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+        }
+
+        /* 古典未來風圓形時鐘 */
+        .clock-face {
+            width: 650px;
+            height: 650px;
+            border-radius: 50%;
+            background: radial-gradient(circle, rgba(18, 24, 38, 0.8) 0%, rgba(5, 7, 10, 0.95) 100%);
+            border: 2px solid rgba(0, 243, 255, 0.3);
+            box-shadow: 0 0 50px rgba(0, 243, 255, 0.15), inset 0 0 40px rgba(0, 0, 0, 0.8);
+            position: relative;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        /* 外環裝飾刻度 */
+        .clock-face::after {
+            content: '';
+            position: absolute;
+            width: 620px;
+            height: 620px;
+            border-radius: 50%;
+            border: 1px dashed rgba(255, 255, 255, 0.1);
+            animation: rotateBg 120s linear infinite;
+        }
+
+        @keyframes rotateBg {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+
+        /* 刻度點/線 */
+        .marker {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            text-align: center;
+        }
+        .marker span {
+            display: inline-block;
+            position: absolute;
+            font-size: 24px;
+            color: rgba(255, 255, 255, 0.4);
+            font-weight: 300;
+        }
+
+        /* 中心軸心 */
+        .center-dot {
+            width: 18px;
+            height: 18px;
+            background: #00f3ff;
+            border-radius: 50%;
+            position: absolute;
+            z-index: 10;
+            box-shadow: 0 0 15px #00f3ff, 0 0 30px #00f3ff;
+        }
+
+        /* 指針基礎樣式 */
+        .hand {
+            position: absolute;
+            bottom: 50%;
+            left: 50%;
+            transform-origin: bottom;
+            border-radius: 10px;
+            z-index: 5;
+        }
+
+        /* 時針 */
+        .hour-hand {
+            width: 8px;
+            height: 160px;
+            background: linear-gradient(to top, #ffffff, #8b9bb4);
+            transform: translateX(-50%) rotate(0deg);
+            box-shadow: 0 0 10px rgba(255, 255, 255, 0.2);
+        }
+
+        /* 分針 */
+        .minute-hand {
+            width: 6px;
+            height: 230px;
+            background: linear-gradient(to top, #00f3ff, #0066ff);
+            transform: translateX(-50%) rotate(0deg);
+            box-shadow: 0 0 15px rgba(0, 243, 255, 0.4);
+        }
+
+        /* 秒針 */
+        .second-hand {
+            width: 2px;
+            height: 260px;
+            background: #ff0055;
+            transform: translateX(-50%) rotate(0deg);
+            z-index: 6;
+            box-shadow: 0 0 15px #ff0055;
+        }
+        
+        /* 秒針尾巴平衡桿 */
+        .second-hand::after {
+            content: '';
+            position: absolute;
+            bottom: -30px;
+            left: -3px;
+            width: 8px;
+            height: 40px;
+            background: #ff0055;
+            border-radius: 4px;
+        }
+
+        /* 數位時間大字顯現 */
+        .digital-time {
+            margin-top: 50px;
+            font-size: 72px;
+            font-weight: 300;
+            letter-spacing: 6px;
+            color: #ffffff;
+            text-shadow: 0 0 30px rgba(0, 243, 255, 0.3);
+            font-variant-numeric: tabular-nums;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="bg-glow"></div>
+
+    <div class="dashboard">
+        <!-- 左側面板：日期與星期 -->
+        <div class="side-panel">
+            <div class="card">
+                <div class="card-title">Current Date</div>
+                <div class="card-value" id="date-display">2026.11.07</div>
+                <div class="card-sub" id="weekday-display">星期六 Saturday</div>
+            </div>
+            <div class="card" style="border-left-color: #7000ff;">
+                <div class="card-title">System Status</div>
+                <div class="card-value" style="font-size: 32px;">ONLINE</div>
+                <div class="card-sub" style="color: #a78bfa;">SECURE LINK ACTIVE</div>
+            </div>
+        </div>
+
+        <!-- 中央時鐘 -->
+        <div class="clock-container">
+            <div class="clock-face">
+                <!-- 刻度與數字 (簡化以 12, 3, 6, 9 為主軸展現古典未來感) -->
+                <div class="center-dot"></div>
+                <!-- 指針 -->
+                <div class="hand hour-hand" id="hour-hand"></div>
+                <div class="hand minute-hand" id="minute-hand"></div>
+                <div class="hand second-hand" id="second-hand"></div>
+            </div>
+            <div class="digital-time" id="digital-time">08:15:00</div>
+        </div>
+
+        <!-- 右側面板：天氣資訊 -->
+        <div class="side-panel">
+            <div class="card" style="border-left-color: #00ff66;">
+                <div class="card-title">Weather Condition</div>
+                <div class="card-value" id="weather-temp">24°C</div>
+                <div class="card-sub" id="weather-desc">晴時多雲 · 舒適</div>
+            </div>
+            <div class="card" style="border-left-color: #ffaa00;">
+                <div class="card-title">Environment</div>
+                <div class="card-value" style="font-size: 36px;" id="weather-humidity">濕度 68%</div>
+                <div class="card-sub" style="color: #ffaa00;">空氣品質：良好 (AQI 32)</div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // 時鐘與日期邏輯
+        function updateClock() {
+            const now = new Date();
+            
+            // 時間計算
+            const hours = now.getHours();
+            const minutes = now.getMinutes();
+            const seconds = now.getSeconds();
+            const milliseconds = now.getMilliseconds();
+
+            // 指針角度計算（加入毫秒使秒針滑動更流暢）
+            const secondDeg = ((seconds + milliseconds / 1000) / 60) * 360;
+            const minuteDeg = ((minutes + seconds / 60) / 60) * 360;
+            const hourDeg = (((hours % 12) + minutes / 60) / 12) * 360;
+
+            document.getElementById('second-hand').style.transform = `translateX(-50%) rotate(${secondDeg}deg)`;
+            document.getElementById('minute-hand').style.transform = `translateX(-50%) rotate(${minuteDeg}deg)`;
+            document.getElementById('hour-hand').style.transform = `translateX(-50%) rotate(${hourDeg}deg)`;
+
+            // 數位時鐘顯示
+            const hStr = String(hours).padStart(2, '0');
+            const mStr = String(minutes).padStart(2, '0');
+            const sStr = String(seconds).padStart(2, '0');
+            document.getElementById('digital-time').innerText = `${hStr}:${mStr}:${sStr}`;
+
+// 日期與星期更新
+            const year = now.getFullYear();
+            const month = String(now.getMonth() + 1).padStart(2, '0');
+            const day = String(now.getDate()).padStart(2, '0');
+            document.getElementById('date-display').innerText = `${year}.${month}.${day}`;
+
+            const weekdays = ['星期日 Sunday', '星期一 Monday', '星期二 Tuesday', '星期三 Wednesday', '星期四 Thursday', '星期五 Friday', '星期六 Saturday'];
+            document.getElementById('weekday-display').innerText = weekdays[now.getDay()];
+        }
+
+        setInterval(updateClock, 50);
+        updateClock();
+
+        // 模擬氣象更新（若需串接真實 API 可在此替換 fetch 邏輯）
+        // 目前呈現高科技看板風格的預設數值
+    </script>
+</body>
+</html>
