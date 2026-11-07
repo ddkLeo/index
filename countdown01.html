@@ -11,7 +11,7 @@
         body {
             font-family: 'Ma Shan Zheng', cursive; /* 使用 Ma Shan Zheng 字體 */
             /* 沙畫/潑墨暈開的動態漸層背景 */
-            background: linear-gradient(135deg, #DEB887, #ffffff, #DEB887, #f4ebd0);
+            background: linear-gradient(135deg, #A9CBE0, #ffffff, #A9CBE0, #f4ebd0);
             background-size: 400% 400%;
             animation: inkFlow 12s ease infinite; /* 背景暈開動畫 */
             display: flex;
@@ -109,7 +109,7 @@
         const days = Math.floor(distance / (1000 * 60 * 60 * 24));
         const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
 
-        document.getElementById("timer").innerHTML = `✨${days} 天✨`;
+        document.getElementById("timer").innerHTML = `✨${days+1} 天✨`;
     }, 1000);
 </script>
 
