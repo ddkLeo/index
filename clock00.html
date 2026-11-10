@@ -252,9 +252,10 @@
 
         <!-- 中央時鐘 -->
         <div class="clock-container">
-         <div class="countdown-banner">
-         	 ❄️ 寒冬送暖園遊會 倒數 <span>08</span> 天 ❄️
-       	 </div>
+	<div class="countdown-banner">
+   	 ❄️ 寒冬送暖園遊會 倒數 <span id="countdown-days">05</span> 天 ❄️
+	</div>
+
          <br></br>
 
             <div class="clock-face">
@@ -354,6 +355,43 @@
         // 頁面開啟時抓取一次，之後每 30 分鐘自動更新一次天氣
         fetchWeather();
         setInterval(fetchWeather, 30 * 60 * 1000);
+
+	//3.倒數
+		function updateCountdown() {
+	    // 設定截止日期為 2026年11月15日 00:00:00
+	    const targetDate = new Date('2026-11-15T00:00:00');
+    	const now = new Date();
+    
+  	  // 計算時間差（毫秒）
+    	const diffTime = targetDate - now;
+    
+   	 // 換算為天數（向上取整或向下取整，這裡用 Math.ceil 確保剩幾天就顯示幾天）
+    	let diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+    
+  	  // 如果已經過期，顯示 00
+   	 if (diffDays < 0) {
+       	 diffDays = 0;
+   	 }
+    
+    // 補零格式化（例如 5 變成 05）
+    const formattedDays = String(diffDays).padStart(2, '0');
+    
+    // 更新網頁上的數字
+    const spanElement = document.getElementById('countdown-days');
+    if (spanElement) {
+        spanElement.textContent = formattedDays;
+    }
+}
+
+	// 頁面載入時先執行一次
+	updateCountdown();
+
+	// 每小時更新一次（或改成每秒更新，這裡以天數為主，每小時檢查即可）
+	setInterval(updateCountdown, 1000 * 60 * 60);
+
+
     </script>
+
+
 </body>
 </html>
