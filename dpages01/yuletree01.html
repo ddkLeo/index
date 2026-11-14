@@ -1,0 +1,315 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Merry Christmas - 聖誕快樂</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        /* 2160x3840 垂直 4K 畫布鎖定 */
+        body {
+            width: 2160px;
+            height: 3840px;
+            overflow: hidden;
+            background: linear-gradient(135deg, #050b14 0%, #0d1b2a 50%, #1b263b 100%);
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            color: #ffffff;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: space-between;
+            position: relative;
+        }
+
+        /* 背景微涼霧氣與光暈動畫 */
+        .ambient-glow {
+            position: absolute;
+            width: 2160px;
+            height: 3840px;
+            background: 
+                radial-gradient(circle at 20% 20%, rgba(26, 54, 93, 0.4) 0%, transparent 40%),
+                radial-gradient(circle at 80% 70%, rgba(15, 32, 67, 0.5) 0%, transparent 50%),
+                radial-gradient(circle at 50% 40%, rgba(44, 122, 123, 0.15) 0%, transparent 40%);
+            z-index: 1;
+            pointer-events: none;
+        }
+
+        /* 雪花 Canvas */
+        #snowCanvas {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 2160px;
+            height: 3840px;
+            z-index: 2;
+            pointer-events: none;
+        }
+
+        /* 頂部祝福文字區 */
+        .header-section {
+            z-index: 3;
+            margin-top: 350px;
+            text-align: center;
+        }
+
+        .holiday-title {
+            font-size: 96px;
+            font-weight: 300;
+            letter-spacing: 12px;
+            color: #e0f2fe;
+            text-shadow: 0 0 30px rgba(125, 211, 252, 0.4);
+            margin-bottom: 24px;
+            text-transform: uppercase;
+        }
+
+        .holiday-subtitle {
+            font-size: 42px;
+            font-weight: 200;
+            letter-spacing: 8px;
+            color: #94a3b8;
+        }
+
+        /* 聖誕樹主容器 */
+        .tree-container {
+            position: relative;
+            width: 1200px;
+            height: 1800px;
+            z-index: 3;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        /* 樹頂星星 */
+        .tree-star {
+            position: absolute;
+            top: 150px;
+            font-size: 100px;
+            color: #fde047;
+            text-shadow: 0 0 40px #facc15, 0 0 80px #eab308;
+            animation: starGlow 2.5s ease-in-out infinite alternate;
+            z-index: 5;
+        }
+
+        @keyframes starGlow {
+            0% { transform: scale(0.9) rotate(0deg); opacity: 0.8; text-shadow: 0 0 30px #facc15; }
+            100% { transform: scale(1.1) rotate(15deg); opacity: 1; text-shadow: 0 0 60px #fde047, 0 0 100px #ca8a04; }
+        }
+
+        /* 幾何時尚聖誕樹層疊 */
+        .tree-layer {
+            position: absolute;
+            width: 0;
+            height: 0;
+            border-left: solid transparent;
+            border-right: solid transparent;
+            border-bottom: solid;
+            filter: drop-shadow(0 20px 30px rgba(0, 0, 0, 0.5));
+        }
+
+        .layer-1 {
+            top: 230px;
+            border-left-width: 180px;
+            border-right-width: 180px;
+            border-bottom-width: 320px;
+            border-bottom-color: #065f46;
+            z-index: 4;
+        }
+
+        .layer-2 {
+            top: 480px;
+            border-left-width: 300px;
+            border-right-width: 300px;
+            border-bottom-width: 420px;
+            border-bottom-color: #047857;
+            z-index: 3;
+        }
+
+        .layer-3 {
+            top: 800px;
+            border-left-width: 420px;
+            border-right-width: 420px;
+            border-bottom-width: 520px;
+            border-bottom-color: #064e3b;
+            z-index: 2;
+        }
+
+        .layer-4 {
+            top: 1180px;
+            border-left-width: 540px;
+            border-right-width: 540px;
+            border-bottom-width: 620px;
+            border-bottom-color: #022c22;
+            z-index: 1;
+        }
+
+        /* 樹幹 */
+        .tree-trunk {
+            position: absolute;
+            bottom: 80px;
+            width: 120px;
+            height: 200px;
+            background: linear-gradient(90deg, #3f2e26, #5c4033, #3f2e26);
+            border-radius: 8px;
+            z-index: 1;
+        }
+
+        /* 樹上閃爍燈泡 (Ornaments) */
+        .ornament {
+            position: absolute;
+            border-radius: 50%;
+            z-index: 6;
+            animation: twinkle 1.8s ease-in-out infinite alternate;
+        }
+
+        @keyframes twinkle {
+            0% { transform: scale(0.8); opacity: 0.4; filter: brightness(0.8); }
+            100% { transform: scale(1.2); opacity: 1; filter: brightness(1.5); box-shadow: 0 0 20px currentColor; }
+        }
+
+        /* 底部氣氛標語區 */
+        .footer-section {
+            z-index: 3;
+            margin-bottom: 250px;
+            text-align: center;
+        }
+
+        .footer-text {
+            font-size: 36px;
+            font-weight: 300;
+            letter-spacing: 6px;
+            color: #64748b;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- 背景光暈 -->
+    <div class="ambient-glow"></div>
+
+    <!-- 降雪 Canvas -->
+    <canvas id="snowCanvas"></canvas>
+
+    <!-- 頂部標題 -->
+    <div class="header-section">
+        <h1 class="holiday-title">Merry Christmas</h1>
+        <div class="holiday-subtitle">WISHES & WARMTH IN THE WINTER</div>
+    </div>
+
+    <!-- 聖誕樹本體 -->
+    <div class="tree-container">
+        <div class="tree-star">★</div>
+        
+        <!-- 樹的層次 -->
+        <div class="tree-layer layer-1"></div>
+        <div class="tree-layer layer-2"></div>
+        <div class="tree-layer layer-3"></div>
+        <div class="tree-layer layer-4"></div>
+        
+        <div class="tree-trunk"></div>
+
+        <!-- 動態燈飾 (使用 JavaScript 動態生成或預排) -->
+        <div id="lightsContainer"></div>
+    </div>
+
+    <!-- 底部資訊 -->
+    <div class="footer-section">
+        <div class="footer-text">HAPPY HOLIDAYS</div>
+    </div>
+
+    <script>
+        // 1. 動態生成浪漫雪花效果 (微涼冷色調、大小交錯)
+        const canvas = document.getElementById('snowCanvas');
+        const ctx = canvas.getContext('2d');
+
+        function resizeCanvas() {
+            canvas.width = 2160;
+            canvas.height = 3840;
+        }
+        resizeCanvas();
+
+        const snowflakes = [];
+        const numFlakes = 120;
+
+        for (let i = 0; i < numFlakes; i++) {
+            snowflakes.push({
+                x: Math.random() * canvas.width,
+                y: Math.random() * canvas.height,
+                radius: Math.random() * 4 + 1.5,
+                speedY: Math.random() * 1.5 + 0.8,
+                speedX: (Math.random() - 0.5) * 0.8,
+                opacity: Math.random() * 0.7 + 0.3
+            });
+        }
+
+        function drawSnow() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            ctx.fillStyle = 'rgba(255, 255, 255, 0.8)';
+            
+            snowflakes.forEach(flake => {
+                ctx.beginPath();
+                ctx.arc(flake.x, flake.y, flake.radius, 0, Math.PI * 2);
+                ctx.fillStyle = `rgba(224, 242, 254, ${flake.opacity})`;
+                ctx.fill();
+
+                // 更新位置
+                flake.y += flake.speedY;
+                flake.x += flake.speedX;
+
+                // 循環邊界
+                if (flake.y > canvas.height) {
+                    flake.y = -10;
+                    flake.x = Math.random() * canvas.width;
+                }
+                if (flake.x > canvas.width) {
+                    flake.x = 0;
+                } else if (flake.x < 0) {
+                    flake.x = canvas.width;
+                }
+            });
+
+            requestAnimationFrame(drawSnow);
+        }
+        drawSnow();
+
+        // 2. 自動生成樹上閃爍的彩色/暖光燈泡
+        const lightsContainer = document.getElementById('lightsContainer');
+        const colors = ['#f87171', '#fbbf24', '#38bdf8', '#c084fc', '#ffffff'];
+        const lightCount = 45;
+
+        for (let i = 0; i < lightCount; i++) {
+            const light = document.createElement('div');
+            light.classList.add('ornament');
+            
+            // 隨機分佈在樹的三角範圍內
+            // 讓燈泡集中在中間上方到底部區域 (相對 tree-container 寬高: 1200x1800)
+            const topPos = Math.random() * 1300 + 250;
+            // 越上面範圍越窄，越下面範圍越寬
+            const widthAtHeight = ((topPos - 150) / 1600) * 900; 
+            const leftPos = (1200 / 2) + (Math.random() - 0.5) * widthAtHeight;
+
+            light.style.top = `${topPos}px`;
+            light.style.left = `${leftPos}px`;
+            
+            const size = Math.random() * 12 + 10;
+            light.style.width = `${size}px`;
+            light.style.height = `${size}px`;
+            
+            const color = colors[Math.floor(Math.random() * colors.length)];
+            light.style.backgroundColor = color;
+            light.style.color = color; // 支援 box-shadow 顏色變數
+            
+            // 錯開閃爍動畫的時間差
+            light.style.animationDelay = `${Math.random() * 2}s`;
+            light.style.animationDuration = `${Math.random() * 1.5 + 1}s`;
+
+            lightsContainer.appendChild(light);
+        }
+    </script>
+</body>
+</html>
