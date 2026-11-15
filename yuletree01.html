@@ -701,21 +701,21 @@
             currentGifts++;
         }
 
-        // 25 秒後啟動禮物掉落
+        // 24 秒後啟動禮物掉落
         const delayCheckInterval = setInterval(() => {
             const elapsedSeconds = (Date.now() - startTime) / 1000;
-            if (elapsedSeconds >= 25) {
+            if (elapsedSeconds >= 24) {
                 clearInterval(delayCheckInterval);
                 giftTimer = setInterval(spawnGift, 120); 
             }
         }, 500);
 
 
-  // 設定等待時間：40秒 = 40000 毫秒
+  // 設定等待時間：38秒 = 38000 毫秒
   setTimeout(function() {
     // 將 'target.html' 替換為你要跳轉過去的網頁檔名或完整網址
     window.location.href = 'https://ddkleo.github.io/index/dpages03/walkbaby01/walkbaby00'; 
-  }, 40000);
+  }, 38000);
 
     </script>
 </body>
