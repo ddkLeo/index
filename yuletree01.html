@@ -1,0 +1,714 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dynamic Christmas Tree & Gift Mountain (2160x1280 Landscape)</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        /* 2160x1280 橫向螢幕鎖定 (背景透過 JS 實現平滑漸進式過渡) */
+        body {
+            width: 2160px;
+            height: 1280px;
+            overflow: hidden;
+            background: #020617; /* 初始純黑色 */
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            position: relative;
+        }
+
+        /* 冬夜微涼與強烈冰凍霜感環境光暈 */
+        .ambient-glow {
+            position: absolute;
+            width: 2160px;
+            height: 1280px;
+            background: 
+                radial-gradient(circle at 30% 20%, rgba(56, 189, 248, 0.25) 0%, transparent 50%),
+                radial-gradient(circle at 70% 80%, rgba(14, 165, 233, 0.15) 0%, transparent 60%),
+                radial-gradient(circle at 50% 50%, rgba(125, 211, 252, 0.1) 0%, transparent 40%);
+            z-index: 1;
+            pointer-events: none;
+            transition: opacity 2s ease;
+        }
+
+        /* 雪花與冰晶 Canvas */
+        #snowCanvas {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 2160px;
+            height: 1280px;
+            z-index: 2;
+            pointer-events: none;
+        }
+
+        /* 流星特效畫布 */
+        #meteorCanvas {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 2160px;
+            height: 1280px;
+            z-index: 3;
+            pointer-events: none;
+        }
+
+.hidden-watermark {
+            position: absolute;
+            top: 130px;
+            right: 70px;
+            font-size: 140px;
+            font-weight: 900;
+            letter-spacing: 12px;
+            /* 象徵冬日暖陽的晨曦金、蜜光橙與希望純白交織的高質感漸層 */
+            background: linear-gradient(#07ac6f, #0af59e 10%, #15f6a4 50%, #0bf59e 0%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            /* 溫暖的金黃色光暈與柔和陰影，傳遞「冬陽溫暖每個小孩」的愛與光輝 */
+            text-shadow: 0 4px 20px rgba(0, 0, 0, 0.6), 0 0 35px rgba(251, 191, 36, 0.6);
+            z-index: 5;
+            opacity: 0;
+            transform: translateY(-20px);
+            transition: opacity 2s ease, transform 2s ease;
+            pointer-events: none;
+        }
+
+        .hidden-watermark.show {
+            opacity: 1; /* 現身后保持清晰，永不消失 */
+            transform: translateY(0);
+            animation: watermarkBreath 4s ease-in-out infinite alternate;
+        }
+
+        @keyframes watermarkBreath {
+            0% { transform: translateY(0) scale(1); filter: brightness(1); }
+            100% { transform: translateY(-5px) scale(1.01); filter: brightness(1.15); }
+        }
+
+        /* 左側聖誕倒數計時面板 */
+        .countdown-board {
+            position: absolute;
+            top: 100px;
+            left: 120px;
+            background: rgba(15, 23, 42, 0.75);
+            border: 2px solid rgba(56, 189, 248, 0.4);
+            backdrop-filter: blur(12px);
+            padding: 35px 50px;
+            border-radius: 24px;
+            z-index: 20;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.6), 0 0 30px rgba(56, 189, 248, 0.2);
+            text-align: center;
+            animation: boardFloat 3s ease-in-out infinite alternate;
+        }
+
+        @keyframes boardFloat {
+            0% { transform: translateY(0); }
+            100% { transform: translateY(-8px); }
+        }
+
+        .countdown-title {
+            font-size: 70px;
+            font-weight: 700;
+            color: #38bdf8;
+            letter-spacing: 2px;
+            margin-bottom: 15px;
+            text-transform: uppercase;
+            text-shadow: 0 0 10px rgba(56, 189, 248, 0.5);
+        }
+
+        .countdown-timer {
+            font-size: 100px;
+            font-weight: 900;
+            color: #fde047;
+            letter-spacing: 3px;
+            text-shadow: 0 0 20px rgba(253, 224, 71, 0.6);
+        }
+
+        .countdown-sub {
+            font-size: 40px;
+            color: #94a3b8;
+            margin-top: 10px;
+            letter-spacing: 1px;
+        }
+
+        /* 浪漫雪地地景 */
+        .snow-ground {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 2160px;
+            height: 220px;
+            background: linear-gradient(to top, #e0f2fe 0%, #bae6fd 60%, rgba(186, 230, 253, 0.8) 80%, transparent 100%);
+            border-radius: 50% 50% 0 0 / 40px 40px 0 0;
+            z-index: 10;
+            pointer-events: none;
+            box-shadow: inset 0 15px 25px rgba(255, 255, 255, 0.8), 0 -10px 30px rgba(56, 189, 248, 0.3);
+        }
+
+        /* 聖誕樹主容器 */
+        .tree-container {
+            position: relative;
+            width: 900px;
+            height: 1250px;
+            z-index: 11;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            transform: scale(0.85);
+            transform-origin: center bottom;
+            bottom: -30px;
+            margin-left: 350px;
+        }
+
+        /* 樹頂大星星 */
+        .tree-star {
+            position: absolute;
+            top: 20px;
+            font-size: 90px;
+            color: #fde047;
+            text-shadow: 0 0 30px #facc15, 0 0 60px #eab308, 0 0 90px #ca8a04;
+            animation: starDance 2s ease-in-out infinite alternate;
+            z-index: 10;
+        }
+
+        @keyframes starDance {
+            0% { transform: scale(0.9) rotate(-10deg); filter: brightness(0.9); }
+            100% { transform: scale(1.15) rotate(10deg); filter: brightness(1.4); }
+        }
+
+        /* 聖誕樹層疊區塊 */
+        .tree-layer {
+            position: absolute;
+            width: 0;
+            height: 0;
+            border-left: solid transparent;
+            border-right: solid transparent;
+            border-bottom: solid;
+            filter: drop-shadow(0 15px 25px rgba(0, 0, 0, 0.7));
+        }
+
+        .layer-1 {
+            top: 110px;
+            border-left-width: 140px;
+            border-right-width: 140px;
+            border-bottom-width: 230px;
+            border-bottom-color: #065f46;
+            z-index: 5;
+        }
+
+        .layer-2 {
+            top: 290px;
+            border-left-width: 240px;
+            border-right-width: 240px;
+            border-bottom-width: 310px;
+            border-bottom-color: #047857;
+            z-index: 4;
+        }
+
+        .layer-3 {
+            top: 530px;
+            border-left-width: 350px;
+            border-right-width: 350px;
+            border-bottom-width: 390px;
+            border-bottom-color: #064e3b;
+            z-index: 3;
+        }
+
+        /* 樹幹 */
+        .tree-trunk {
+            position: absolute;
+            bottom: 40px;
+            width: 100px;
+            height: 360px;
+            background: linear-gradient(90deg, #271c18, #452a1d, #271c18);
+            border-radius: 8px;
+            z-index: 1;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.8);
+        }
+
+        /* 樹上的裝飾物件通用樣式 */
+        .ornament-item {
+            position: absolute;
+            z-index: 8;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            animation: itemSwing 3s ease-in-out infinite alternate;
+        }
+
+        @keyframes itemSwing {
+            0% { transform: rotate(-8deg) scale(0.95); }
+            100% { transform: rotate(8deg) scale(1.05); }
+        }
+
+        /* 禮物盒樣式 */
+        .gift-box {
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, #ef4444, #dc2626);
+            border-radius: 6px;
+            position: relative;
+            box-shadow: 0 5px 12px rgba(0,0,0,0.4);
+        }
+        .gift-box::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 40%;
+            width: 20%;
+            height: 100%;
+            background: #fde047;
+        }
+        .gift-box::after {
+            content: '';
+            position: absolute;
+            top: 40%;
+            left: 0;
+            width: 100%;
+            height: 20%;
+            background: #fde047;
+        }
+
+        /* 聖誕襪樣式 */
+        .sock {
+            width: 100%;
+            height: 100%;
+            background: #dc2626;
+            border-radius: 0 0 45% 45%;
+            position: relative;
+            box-shadow: 0 5px 12px rgba(0,0,0,0.4);
+        }
+        .sock::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -10%;
+            width: 120%;
+            height: 30%;
+            background: #f8fafc;
+            border-radius: 6px;
+        }
+
+        /* 閃爍彩色燈泡 */
+        .bling-light {
+            border-radius: 50%;
+            z-index: 7;
+            animation: lightBlink 1.5s ease-in-out infinite alternate;
+        }
+
+        @keyframes lightBlink {
+            0% { opacity: 0.3; transform: scale(0.8); filter: brightness(0.6); }
+            100% { opacity: 1; transform: scale(1.25); filter: brightness(1.8); box-shadow: 0 0 15px currentColor; }
+        }
+
+        /* 樹上 Merry Christmas 掛牌 */
+        .xmas-badge {
+            position: absolute;
+            top: 650px;
+            left: 50%;
+            transform: translateX(-50%) rotate(-4deg);
+            background: linear-gradient(135deg, #b91c1c, #991b1b);
+            border: 3px solid #fde047;
+            padding: 10px 25px;
+            border-radius: 30px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.6), 0 0 20px rgba(239, 68, 68, 0.5);
+            z-index: 9;
+            animation: badgeFloat 2.5s ease-in-out infinite alternate;
+        }
+
+        @keyframes badgeFloat {
+            0% { transform: translateX(-50%) translateY(0) rotate(-4deg); }
+            100% { transform: translateX(-50%) translateY(-6px) rotate(4deg); }
+        }
+
+        .xmas-badge span {
+            font-size: 26px;
+            font-weight: 800;
+            letter-spacing: 3px;
+            color: #fde047;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.5);
+            text-transform: uppercase;
+        }
+
+        /* 平均分配填滿畫面下方的動態掉落禮物容器 */
+        .gift-container {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 2160px;
+            height: 220px; 
+            pointer-events: none;
+            z-index: 13;
+        }
+
+        /* 單個禮物掉落與堆疊樣式（原大尺寸） */
+        .gift-item {
+            position: absolute;
+            font-size: 200px; 
+            bottom: -300px;    
+            opacity: 0;
+            filter: drop-shadow(0 15px 20px rgba(0, 0, 0, 0.6));
+            transition: bottom 0.8s cubic-bezier(0.25, 1, 0.5, 1), 
+                        opacity 0.4s ease, 
+                        transform 0.4s ease;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- 背景霧氣與環境光暈 -->
+    <div id="ambientGlow" class="ambient-glow"></div>
+
+    <!-- 降雪與冰晶 Canvas -->
+    <canvas id="snowCanvas"></canvas>
+
+    <!-- 流星 Canvas -->
+    <canvas id="meteorCanvas"></canvas>
+
+    <!-- 右上角質感浮水印：「苗栗家扶」 (20秒後現身且一直清晰漂亮) -->
+    <div id="watermark" class="hidden-watermark">苗栗家扶</div>
+
+    <!-- 左側聖誕倒數計時面板 -->
+    <div class="countdown-board">
+        <div class="countdown-title">🎄 平安夜倒數 🎄</div>
+        <div id="countdownTimer" class="countdown-timer">00 天 00 小時</div>
+        <div class="countdown-sub">Merry Christmas & Happy New Year</div>
+    </div>
+
+    <!-- 浪漫雪地地景 -->
+    <div class="snow-ground"></div>
+
+    <!-- 聖誕樹本體 -->
+    <div class="tree-container">
+        <!-- 樹頂星星 -->
+        <div class="tree-star">★</div>
+
+        <!-- 樹的層次 -->
+        <div class="tree-layer layer-1"></div>
+        <div class="tree-layer layer-2"></div>
+        <div class="tree-layer layer-3"></div>
+        
+        <div class="tree-trunk"></div>
+
+        <!-- Merry Christmas 裝飾掛牌 -->
+        <div class="xmas-badge">
+            <span>Merry Christmas</span>
+        </div>
+
+        <!-- 動態生成的樹上掛飾與燈泡容器 -->
+        <div id="decorationsContainer"></div>
+    </div>
+
+    <!-- 平均分配填滿畫面下方的動態掉落禮物容器 -->
+    <div id="giftContainer" class="gift-container"></div>
+
+    <script>
+        // 0. 記錄啟動時間
+        const startTime = Date.now();
+
+        // 1. 背景平滑漸進式顏色演變邏輯
+        function updateBackgroundTheme() {
+            const elapsedSeconds = (Date.now() - startTime) / 1000;
+            const body = document.body;
+            const glow = document.getElementById('ambientGlow');
+
+            let r, g, b;
+            let opacityGlow;
+
+            if (elapsedSeconds <= 10) {
+                r = 2; g = 6; b = 23;
+                opacityGlow = 0.3;
+            } else if (elapsedSeconds <= 30) {
+                const p = (elapsedSeconds - 10) / 20;
+                r = Math.round(2 + (8 - 2) * p);
+                g = Math.round(6 + (47 - 6) * p);
+                b = Math.round(23 + (73 - 23) * p);
+                opacityGlow = 0.3 + 0.3 * p;
+            } else if (elapsedSeconds <= 80) {
+                const p = (elapsedSeconds - 30) / 50;
+                r = Math.round(8 + (86 - 8) * p);
+                g = Math.round(47 + (130 - 47) * p);
+                b = Math.round(73 + (153 - 73) * p);
+                opacityGlow = 0.6 + 0.25 * p;
+            } else {
+                const p = Math.min(1, (elapsedSeconds - 80) / 30);
+                r = Math.round(86 + (245 - 186) * p);
+                g = Math.round(130 + (247 - 230) * p);
+                b = Math.round(153 + (255 - 253) * p);
+                opacityGlow = 0.85 + 0.15 * p;
+            }
+
+            body.style.background = `rgb(${r}, ${g}, ${b})`;
+            glow.style.opacity = opacityGlow;
+
+            // 20秒後：讓「苗栗家扶」浮水印現身並持續保持清晰漂亮
+            if (elapsedSeconds >= 20) {
+                document.getElementById('watermark').classList.add('show');
+            }
+        }
+        setInterval(updateBackgroundTheme, 200);
+
+        // 2. 聖誕節倒數計時邏輯
+        function updateCountdown() {
+            const now = new Date();
+            let year = now.getFullYear();
+            let christmas = new Date(year, 11, 24, 18, 0, 0);
+
+            if (now.getTime() > christmas.getTime()) {
+                christmas = new Date(year + 1, 11, 24, 18, 0, 0);
+            }
+
+            const diff = christmas.getTime() - now.getTime();
+            const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+            const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+
+            document.getElementById('countdownTimer').innerText = 
+                `${days} 天 ${String(hours).padStart(2, '0')} 小時`;
+        }
+        setInterval(updateCountdown, 1000);
+        updateCountdown();
+
+        // 3. 飄雪與冰晶特效
+        const canvas = document.getElementById('snowCanvas');
+        const ctx = canvas.getContext('2d');
+
+        function resizeCanvas() {
+            canvas.width = 2160;
+            canvas.height = 1280;
+        }
+        resizeCanvas();
+
+        const snowflakes = [];
+        const numFlakes = 180;
+
+        for (let i = 0; i < numFlakes; i++) {
+            snowflakes.push({
+                x: Math.random() * canvas.width,
+                y: Math.random() * canvas.height,
+                radius: Math.random() * 4 + 1.5,
+                speedY: Math.random() * 2 + 0.8,
+                speedX: (Math.random() - 0.5) * 1.5,
+                opacity: Math.random() * 0.8 + 0.2
+            });
+        }
+
+        function drawSnow() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            
+            snowflakes.forEach(flake => {
+                ctx.beginPath();
+                ctx.arc(flake.x, flake.y, flake.radius, 0, Math.PI * 2);
+                ctx.fillStyle = `rgba(186, 230, 253, ${flake.opacity})`;
+                ctx.shadowBlur = 8;
+                ctx.shadowColor = '#38bdf8';
+                ctx.fill();
+
+                flake.y += flake.speedY;
+                flake.x += flake.speedX;
+
+                if (flake.y > canvas.height) {
+                    flake.y = -20;
+                    flake.x = Math.random() * canvas.width;
+                }
+                if (flake.x > canvas.width) {
+                    flake.x = 0;
+                } else if (flake.x < 0) {
+                    flake.x = canvas.width;
+                }
+            });
+
+            requestAnimationFrame(drawSnow);
+        }
+        drawSnow();
+
+        // 4. 17秒時流星劃過特效
+        const meteorCanvas = document.getElementById('meteorCanvas');
+        const mCtx = meteorCanvas.getContext('2d');
+        meteorCanvas.width = 2160;
+        meteorCanvas.height = 1280;
+
+        let meteorTriggered = false;
+        let meteor = {
+            x: 2000,
+            y: 100,
+            length: 350,
+            speed: 25,
+            opacity: 1,
+            active: false
+        };
+
+        function updateMeteor() {
+            const elapsedSeconds = (Date.now() - startTime) / 1000;
+            mCtx.clearRect(0, 0, meteorCanvas.width, meteorCanvas.height);
+
+            if (elapsedSeconds >= 17 && !meteorTriggered) {
+                meteor.active = true;
+                meteorTriggered = true;
+            }
+
+            if (meteor.active) {
+                mCtx.save();
+                mCtx.strokeStyle = `rgba(224, 242, 254, ${meteor.opacity})`;
+                mCtx.lineWidth = 4;
+                mCtx.shadowBlur = 20;
+                mCtx.shadowColor = '#38bdf8';
+
+                mCtx.beginPath();
+                mCtx.moveTo(meteor.x, meteor.y);
+                mCtx.lineTo(meteor.x - meteor.length, meteor.y + meteor.length * 0.5);
+                mCtx.stroke();
+                mCtx.restore();
+
+                meteor.x -= meteor.speed;
+                meteor.y += meteor.speed * 0.5;
+                meteor.opacity -= 0.015;
+
+                if (meteor.opacity <= 0) {
+                    meteor.active = false;
+                }
+            }
+
+            requestAnimationFrame(updateMeteor);
+        }
+        updateMeteor();
+
+        // 5. 樹上裝飾防重疊與大小不一演算法
+        const container = document.getElementById('decorationsContainer');
+        const lightColors = ['#38bdf8', '#7dd3fc', '#bae6fd', '#fde047', '#f87171', '#ffffff', '#c084fc', '#4ade80'];
+        const placedDecorations = []; 
+
+        function isValidPosition(x, y, minDistance) {
+            for (let pos of placedDecorations) {
+                let dx = pos.x - x;
+                let dy = pos.y - y;
+                let dist = Math.sqrt(dx * dx + dy * dy);
+                if (dist < minDistance) return false;
+            }
+            return true;
+        }
+
+        const specialTypes = ['gift', 'sock', 'star'];
+        let attempts = 0;
+        while (placedDecorations.length < 35 && attempts < 1000) {
+            attempts++;
+            const topPos = Math.random() * 850 + 120;
+            const widthAtHeight = ((topPos - 50) / 1000) * 700;
+            const leftPos = (900 / 2) + (Math.random() - 0.5) * (widthAtHeight * 0.75);
+
+            if (!isValidPosition(leftPos, topPos, 55)) continue;
+            placedDecorations.push({ x: leftPos, y: topPos });
+
+            const item = document.createElement('div');
+            item.classList.add('ornament-item');
+            item.style.top = `${topPos}px`;
+            item.style.left = `${leftPos}px`;
+            item.style.animationDelay = `${Math.random() * 2}s`;
+
+            const type = specialTypes[Math.floor(Math.random() * specialTypes.length)];
+            const randomSize = Math.floor(Math.random() * 22) + 38;
+
+            if (type === 'gift') {
+                const box = document.createElement('div');
+                box.classList.add('gift-box');
+                item.style.width = `${randomSize}px`;
+                item.style.height = `${randomSize}px`;
+                item.appendChild(box);
+            } else if (type === 'sock') {
+                const s = document.createElement('div');
+                s.classList.add('sock');
+                item.style.width = `${randomSize * 0.8}px`;
+                item.style.height = `${randomSize * 1.1}px`;
+                item.appendChild(s);
+            } else {
+                const st = document.createElement('div');
+                st.innerHTML = '★';
+                st.style.fontSize = `${randomSize * 0.9}px`;
+                st.style.color = '#fde047';
+                st.style.textShadow = '0 0 12px #facc15';
+                item.appendChild(st);
+            }
+
+            container.appendChild(item);
+        }
+
+        // 閃爍燈泡 (100 顆)
+        let lightAttempts = 0;
+        let lightsCount = 0;
+        while (lightsCount < 100 && lightAttempts < 2000) {
+            lightAttempts++;
+            const topPos = Math.random() * 950 + 100;
+            const widthAtHeight = ((topPos - 50) / 1000) * 800;
+            const leftPos = (900 / 2) + (Math.random() - 0.5) * widthAtHeight;
+
+            if (!isValidPosition(leftPos, topPos, 30)) continue;
+            placedDecorations.push({ x: leftPos, y: topPos });
+
+            const light = document.createElement('div');
+            light.classList.add('ornament-item', 'bling-light');
+
+            const lightSize = Math.floor(Math.random() * 10) + 14;
+            light.style.width = `${lightSize}px`;
+            light.style.height = `${lightSize}px`;
+            light.style.top = `${topPos}px`;
+            light.style.left = `${leftPos}px`;
+
+            const color = lightColors[Math.floor(Math.random() * lightColors.length)];
+            light.style.backgroundColor = color;
+            light.style.color = color;
+            light.style.animationDelay = `${Math.random() * 2}s`;
+            light.style.animationDuration = `${Math.random() * 1 + 1}s`;
+
+            container.appendChild(light);
+            lightsCount++;
+        }
+
+        // 6. 動態掉落禮物邏輯 (25 秒後開始出現，平均分佈填滿整個下方寬度)
+        const giftContainer = document.getElementById('giftContainer');
+        const maxGifts = 100; 
+        let currentGifts = 0;
+        let giftTimer = null;
+
+        function spawnGift() {
+            if (currentGifts >= maxGifts) {
+                clearInterval(giftTimer);
+                return;
+            }
+
+            const gift = document.createElement('div');
+            gift.className = 'gift-item';
+            gift.innerText = '🎁';
+
+            const randomX = Math.random() * 1950 + 50; 
+            const randomBottom = Math.random() * 130; 
+            const randomRotate = Math.random() * 50 - 25; 
+            const randomScale = 0.6 + Math.random() * 0.6;
+
+            gift.style.left = `${randomX}px`;
+            giftContainer.appendChild(gift);
+
+            setTimeout(() => {
+                gift.style.opacity = '1';
+                gift.style.bottom = `${randomBottom}px`;
+                gift.style.transform = `rotate(${randomRotate}deg) scale(${randomScale})`;
+            }, 50);
+
+            currentGifts++;
+        }
+
+        // 25 秒後啟動禮物掉落
+        const delayCheckInterval = setInterval(() => {
+            const elapsedSeconds = (Date.now() - startTime) / 1000;
+            if (elapsedSeconds >= 25) {
+                clearInterval(delayCheckInterval);
+                giftTimer = setInterval(spawnGift, 120); 
+            }
+        }, 500);
+    </script>
+</body>
+</html>
