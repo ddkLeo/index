@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GIF 與 JPG 互動展示 - 滿版背景與煙火</title>
+    <style>
+        /* 設定網頁基本樣式，固定尺寸為 2160x1280 */
+        body {
+            width: 2160px;
+            height: 1280px;
+            margin: 0;
+            overflow: hidden; /* 超出尺寸的內容不顯示捲軸 */
+            background-color: #222; /* 預設背景色 */
+            position: relative;
+        }
+
+        /* JPG 靜態圖檔：改為滿版背景填滿整個螢幕 (2160x1280) */
+        .jpg-container {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 2160px;
+            height: 1280px;
+            z-index: 1; /* 確保在最底層 */
+        }
+
+        .jpg-container img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover; /* 確保圖片不變形填滿整個螢幕 */
+            border-radius: 0;   /* 滿版不需要圓角與陰影 */
+            box-shadow: none;
+        }
+
+        /* GIF 動態圖檔：來回移動（總共 30 秒） */
+        .gif-container {
+            position: absolute;
+            top: 900px; /* 配合滿版高度，將走路位置往下調整（可自行修改） */
+            z-index: 3; /* 確保在 JPG 與煙火上層 */
+            animation: walkBackAndForth 30s linear infinite;
+        }
+
+        .gif-container img {
+            width: 600px; /* 可依需求調整 GIF 大小 */
+            height: auto;
+        }
+
+        /* 定義來回走動與轉向的關鍵影格（30秒） */
+        @keyframes walkBackAndForth {
+            /* === 【去程】 0% ~ 49%：正常由右往左走 (前 15 秒) === */
+            0% {
+                transform: translateX(2300px) scaleX(1);
+            }
+            49.9% {
+                transform: translateX(-400px) scaleX(1);
+            }
+
+            /* === 【瞬間轉向】 50%：瞬間鏡像翻轉準備回程 === */
+            50% {
+                transform: translateX(-400px) scaleX(-1);
+            }
+
+            /* === 【回程】 50.1% ~ 100%：鏡像由左往右走 (後 15 秒) === */
+            100% {
+                transform: translateX(2300px) scaleX(-1);
+            }
+        }
+
+        /* ================= 煙火特效區塊 ================= */
+        .fireworks-container {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 2; /* 放在 JPG 上層、GIF 底層 */
+            pointer-events: none; /* 避免滑鼠互動干擾 */
+            
+            /* 預設透明度為 0，只在後半段 50%~100% 顯示 */
+            opacity: 0;
+            animation: showFireworksOnlyReturn 30s linear infinite;
+        }
+
+        /* 控制煙火只在回程（後 15 秒）出現的動畫 */
+        @keyframes showFireworksOnlyReturn {
+            0% { opacity: 0; }
+            49.9% { opacity: 0; }
+            50% { opacity: 1; }
+            100% { opacity: 1; }
+        }
+
+        /* 單顆煙火的基礎樣式與爆炸動畫 */
+        .firework {
+            position: absolute;
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            box-shadow: 
+                0 0 25px 10px #ffeb3b,
+                35px -45px 30px 8px #ff5722,
+                -45px -35px 25px 6px #e91e63,
+                55px 35px 30px 8px #03a9f4,
+                -35px 45px 25px 6px #4caf50,
+                0 -70px 35px 12px #9c27b0;
+            animation: explode 1.5s ease-out infinite;
+        }
+
+        /* 讓煙火集中在畫面內部（JPG 圖片範圍內）的上方區域 */
+        .fw-1 { top: 300px; left: 500px; animation-delay: 0s; }
+        .fw-2 { top: 250px; left: 1100px; animation-delay: 0.5s; }
+        .fw-3 { top: 350px; left: 1650px; animation-delay: 1s; }
+        .fw-4 { top: 200px; left: 800px; animation-delay: 0.8s; }
+
+        @keyframes explode {
+            0% {
+                transform: scale(0.2);
+                opacity: 1;
+            }
+            50% {
+                transform: scale(1.5);
+                opacity: 0.8;
+            }
+            100% {
+                transform: scale(2.2);
+                opacity: 0;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- JPG 靜態圖檔區塊（滿版背景） -->
+    <div class="jpg-container">
+        <img src='https://ddkleo.github.io/index/dpages03/walkbaby01/walkbaby01.jpg' alt="JPG 滿版背景">
+    </div>
+
+    <!-- 漂亮的煙火秀區塊（現在會顯示在畫面內部） -->
+    <div class="fireworks-container">
+        <div class="firework fw-1"></div>
+        <div class="firework fw-2"></div>
+        <div class="firework fw-3"></div>
+        <div class="firework fw-4"></div>
+    </div>
+
+    <!-- GIF 動態圖檔區塊（總長 30 秒來回） -->
+    <div class="gif-container">
+        <img src='https://ddkleo.github.io/index/dpages03/walkbaby01/walkbaby01.gif' alt="GIF 動態圖">
+    </div>
+
+</body>
+</html>
