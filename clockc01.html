@@ -352,8 +352,8 @@
             background: rgba(210, 235, 255, 0.95);
         }
         body.stage-2 .card {
-            background: rgba(225, 242, 255, 0.95);
-            border-color: rgba(255, 255, 255, 0.8);
+            background: rgba(225, 242, 255, 0.8);
+            border-color: rgba(255, 255, 255, 0.7);
         }
     </style>
 </head>
@@ -533,7 +533,7 @@
                     body.classList.remove('stage-1');
                     body.classList.add('stage-2');
                 }
-            } else if (elapsed >= 40 * 1000) {
+            } else if (elapsed >= 42 * 1000) {
                 if (!body.classList.contains('stage-1')) {
                     body.classList.add('stage-1');
                 }
