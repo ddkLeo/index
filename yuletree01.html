@@ -260,8 +260,8 @@
 
         .gift-item {
             position: absolute;
-            font-size: 180px;
-            bottom: -300px;
+            font-size: 360px;
+            bottom: -400px;
             opacity: 0;
             transition: bottom 0.8s cubic-bezier(0.25, 1, 0.5, 1), opacity 0.4s ease;
         }
@@ -423,7 +423,7 @@
         }
         updateMeteor();
 
-        // 5. 樹上裝飾防重疊演算法（確保高亮度、避開深綠色）
+        // 5. 樹上裝飾防重疊演算法
         const container = document.getElementById('decorationsContainer');
         const lightColors = ['#38bdf8', '#7dd3fc', '#bae6fd', '#fde047', '#f87171', '#ffffff', '#c084fc', '#4ade80'];
         const placedDecorations = [];
@@ -455,7 +455,6 @@
             const type = specialTypes[Math.floor(Math.random() * specialTypes.length)];
             const size = Math.floor(Math.random() * 24) + 32;
 
-            // 特別挑選與綠樹反差極大、高亮度的色相角度 (例如亮粉紅、亮黃、亮紫、亮藍、亮橘，避開暗色與綠色 70~160 度)
             const vibrantHues = [0, 25, 45, 200, 275, 320, 350];
             const chosenHue = vibrantHues[Math.floor(Math.random() * vibrantHues.length)];
 
@@ -509,33 +508,57 @@
             lightsCount++;
         }
 
-        // 6. 底部動態掉落禮物（極高亮度、極大對比）
+        // 6. 底部動態掉落禮物（水平範圍調整為從 -20 到最右側 2100）
         const giftContainer = document.getElementById('giftContainer');
         let currentGifts = 0;
-        const maxGifts = 80;
+        const maxGifts = 20;
+        const giftPositions = [];
+        
+        const contrastHues = [0, 20, 45, 75, 110, 140, 180, 210, 240, 270, 300, 330];
+        let shuffledHues = [...contrastHues].sort(() => Math.random() - 0.5);
+        let hueIndex = 0;
 
         function spawnGift() {
             if (currentGifts >= maxGifts) return;
+            
+            let posX, tries = 0, isTooClose = false;
+            do {
+                // 水平分佈範圍從 -220 涵蓋到 2070，確保最左側（包含畫面邊緣甚至稍微超出）都有禮物
+                posX = Math.random() * 2070 - 220;
+                isTooClose = false;
+                for (let p of giftPositions) {
+                    if (Math.abs(p - posX) < 130) {
+                        isTooClose = true;
+                        break;
+                    }
+                }
+                tries++;
+            } while (isTooClose && tries < 20);
+
+            giftPositions.push(posX);
+
             const gift = document.createElement('div');
             gift.className = 'gift-item';
             
-            const giftIcons = ['🎁', '📦', '🎀', '🧸'];
+            const giftIcons = ['🎁', '📦'];
             gift.innerText = giftIcons[Math.floor(Math.random() * giftIcons.length)];
 
-            // 強制過濾：避開綠色區間，只用超鮮豔、超亮眼的高飽和淺色 (利用色相與高亮度處理)
-            const contrastHues = [0, 20, 45, 195, 230, 280, 310, 340];
-            const randomHue = contrastHues[Math.floor(Math.random() * contrastHues.length)];
-            
-            gift.style.filter = `hue-rotate(${randomHue}deg) saturate(2.5) brightness(1.35) drop-shadow(0 10px 20px rgba(255,255,255,0.4))`;
+            const randomHue = shuffledHues[hueIndex];
+            hueIndex = (hueIndex + 1) % shuffledHues.length;
+            if (hueIndex === 0) {
+                shuffledHues.sort(() => Math.random() - 0.5);
+            }
 
-            gift.style.left = `${Math.random() * 1980 + 90}px`;
+            gift.style.filter = `hue-rotate(${randomHue}deg) saturate(2.5) brightness(1.2) drop-shadow(2px 4px 0px rgba(0,0,0,0.8)) drop-shadow(-2px -2px 0px rgba(255,255,255,0.4))`;
+            gift.style.left = `${posX}px`;
+            
             giftContainer.appendChild(gift);
 
             setTimeout(() => {
                 gift.style.opacity = '1';
-                gift.style.bottom = `${Math.random() * 140}px`;
-                const randomScale = 0.5 + Math.random() * 0.8;
-                gift.style.transform = `rotate(${Math.random() * 60 - 30}deg) scale(${randomScale})`;
+                gift.style.bottom = `${Math.random() * 20 - 110}px`;
+                const randomScale = 0.6 + Math.random() * 0.6;
+                gift.style.transform = `rotate(${Math.random() * 50 - 25}deg) scale(${randomScale})`;
             }, 50);
 
             currentGifts++;
@@ -544,7 +567,7 @@
         const delayCheck = setInterval(() => {
             if ((Date.now() - startTime) / 1000 >= 24) {
                 clearInterval(delayCheck);
-                setInterval(spawnGift, 180);
+                setInterval(spawnGift, 450);
             }
         }, 500);
 
