@@ -33,12 +33,12 @@
             box-shadow: none;
         }
 
-        /* GIF 動態圖檔：來回移動（總共 30 秒） */
+        /* GIF 動態圖檔：來回移動（總共 20 秒） */
         .gif-container {
             position: absolute;
             top: 900px; /* 配合滿版高度，將走路位置往下調整（可自行修改） */
             z-index: 3; /* 確保在 JPG 與煙火上層 */
-            animation: walkBackAndForth 30s linear infinite;
+            animation: walkBackAndForth 20s linear infinite;
         }
 
         .gif-container img {
@@ -79,10 +79,10 @@
             
             /* 預設透明度為 0，只在後半段 50%~100% 顯示 */
             opacity: 0;
-            animation: showFireworksOnlyReturn 30s linear infinite;
+            animation: showFireworksOnlyReturn 6s linear infinite;
         }
 
-        /* 控制煙火只在回程（後 15 秒）出現的動畫 */
+        /* 控制煙火只在回程（後 6 秒）出現的動畫 */
         @keyframes showFireworksOnlyReturn {
             0% { opacity: 0; }
             49.9% { opacity: 0; }
@@ -143,7 +143,7 @@
         <div class="firework fw-4"></div>
     </div>
 
-    <!-- GIF 動態圖檔區塊（總長 30 秒來回） -->
+    <!-- GIF 動態圖檔區塊（總長 24 秒來回） -->
     <div class="gif-container">
         <img src='https://ddkleo.github.io/index/dpages03/walkbaby01/walkbaby01.gif' alt="GIF 動態圖">
     </div>
