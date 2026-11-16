@@ -15,8 +15,7 @@
             width: 2160px;
             height: 1280px;
             /* 預設初始背景 */
-            background: radial-gradient(circle at center, #060e18 0%, #010306 100%);
-            animation: temperatureDrop 12s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+            background: radial-gradient(circle at center, #0a1118 0%, #020408 100%);
             font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
             color: #ffffff;
             overflow: hidden;
@@ -24,16 +23,8 @@
             justify-content: center;
             align-items: center;
             position: relative;
-            transition: background 3s ease; /* 讓背景階段切換更平滑 */
-        }
-
-        @keyframes temperatureDrop {
-            0% {
-                background: radial-gradient(circle at center, #0a1118 0%, #020408 100%);
-            }
-            100% {
-                background: radial-gradient(circle at center, #0e2942 0%, #030a14 100%);
-            }
+            /* 👑 讓背景、顏色切換時有 1.5 秒的絲滑漸變 */
+            transition: background 1.5s ease;
         }
 
         /* 螢幕基礎結冰與冰霜邊框層 */
@@ -49,17 +40,7 @@
                         inset 0 0 350px rgba(50, 180, 255, 0.2),
                         inset 0 0 60px rgba(255, 255, 255, 0.4);
             opacity: 0.6;
-            animation: frostIntensify 15s forwards;
-            transition: opacity 3s ease, box-shadow 3s ease;
-        }
-
-        @keyframes frostIntensify {
-            to {
-                opacity: 1;
-                box-shadow: inset 0 0 220px rgba(0, 210, 255, 0.8),
-                            inset 0 0 400px rgba(50, 190, 255, 0.5),
-                            inset 0 0 80px rgba(255, 255, 255, 0.85);
-            }
+            transition: opacity 1.5s ease, box-shadow 1.5s ease;
         }
 
         /* 動態銳利冰裂容器 */
@@ -128,7 +109,8 @@
                         inset 0 0 70px rgba(135, 206, 250, 0.5),
                         inset 0 0 20px rgba(255, 255, 255, 0.7),
                         0 0 90px rgba(0, 180, 255, 0.35);
-            transition: background 3s ease, border-color 3s ease;
+            /* 👑 面板加入平滑漸變 */
+            transition: background 1.5s ease, border-color 1.5s ease, box-shadow 1.5s ease;
         }
 
         .side-panel {
@@ -144,7 +126,8 @@
             padding: 35px 25px 25px 25px;
             position: relative;
             box-shadow: inset 0 0 30px rgba(135, 206, 250, 0.25);
-            transition: background 3s ease, border-color 3s ease;
+            /* 👑 卡片加入平滑漸變 */
+            transition: background 1.5s ease, border-color 1.5s ease;
         }
 
         .card::before {
@@ -216,7 +199,8 @@
             color: #70d6ff;
             box-shadow: 0 0 40px rgba(112, 214, 255, 0.45);
             z-index: 10;
-            transition: background 3s ease;
+            /* 👑 橫幅加入平滑漸變 */
+            transition: background 1.5s ease, border-color 1.5s ease;
         }
 
         .countdown-banner span {
@@ -240,7 +224,8 @@
             display: flex;
             justify-content: center;
             align-items: center;
-            transition: background 3s ease, border-color 3s ease;
+            /* 👑 時鐘盤加入平滑漸變 */
+            transition: background 1.5s ease, border-color 1.5s ease;
         }
 
         .clock-face::after {
@@ -321,6 +306,54 @@
             color: #ffffff;
             text-shadow: 0 0 45px rgba(0, 243, 255, 0.7);
             font-variant-numeric: tabular-nums;
+        }
+
+        /* ==========================================
+           👑 階段結冰狀態樣式（透過 CSS Class 控制漸變）
+           ========================================== */
+        
+        /* 階段一 (36秒)：寒意加劇 */
+        body.stage-1 {
+            background: radial-gradient(circle at center, #254b70 0%, #0d2138 100%);
+        }
+        body.stage-1 .dashboard {
+            background: linear-gradient(135deg, rgba(40, 85, 125, 0.85) 0%, rgba(10, 30, 55, 0.95) 100%);
+            border-color: rgba(200, 240, 255, 0.85);
+        }
+        body.stage-1 .screen-frost-overlay {
+            opacity: 0.9;
+            box-shadow: inset 0 0 250px rgba(150, 225, 255, 0.7), inset 0 0 500px rgba(255, 255, 255, 0.6);
+        }
+        body.stage-1 .clock-face {
+            background: radial-gradient(circle, rgba(20, 50, 85, 0.96) 0%, rgba(5, 15, 30, 0.99) 100%);
+        }
+        body.stage-1 .card {
+            background: rgba(25, 55, 90, 0.92);
+            border-color: rgba(180, 230, 255, 0.7);
+        }
+
+        /* 階段二 (57秒)：極致白霜暴風雪 */
+        body.stage-2 {
+            background: radial-gradient(circle at center, #d0e8ff 0%, #a0c8f0 100%);
+        }
+        body.stage-2 .dashboard {
+            background: linear-gradient(135deg, rgba(220, 240, 255, 0.95) 0%, rgba(180, 215, 250, 0.98) 100%);
+            border-color: rgba(255, 255, 255, 0.95);
+        }
+        body.stage-2 .screen-frost-overlay {
+            opacity: 1;
+            box-shadow: inset 0 0 300px rgba(255, 255, 255, 0.95), inset 0 0 600px rgba(200, 235, 255, 0.9);
+        }
+        body.stage-2 .clock-face {
+            background: radial-gradient(circle, rgba(210, 235, 255, 0.98) 0%, rgba(170, 205, 240, 0.99) 100%);
+            border-color: rgba(255, 255, 255, 0.95);
+        }
+        body.stage-2 .countdown-banner {
+            background: rgba(210, 235, 255, 0.95);
+        }
+        body.stage-2 .card {
+            background: rgba(225, 242, 255, 0.95);
+            border-color: rgba(255, 255, 255, 0.8);
         }
     </style>
 </head>
@@ -412,7 +445,6 @@
             directionIndex = (directionIndex + 1) % directions.length;
 
             do {
-                // 強制將起點定在螢幕的最邊邊
                 if (chosenDir === 'top') {
                     posX = Math.random() * w;
                     posY = 0;
@@ -427,7 +459,6 @@
                     posY = Math.random() * h;
                 }
 
-                // 避開中央時鐘與左右卡片區
                 const inClock = (posX >= clockRect.left - 40 && posX <= clockRect.right + 40 && posY >= clockRect.top - 40 && posY <= clockRect.bottom + 40);
                 const inLeftCard = (posX >= leftCards.left - 30 && posX <= leftCards.right + 30 && posY >= leftCards.top - 30 && posY <= leftCards.bottom + 30);
                 const inRightCard = (posX >= rightCards.left - 30 && posX <= rightCards.right + 30 && posY >= rightCards.top - 30 && posY <= rightCards.bottom + 30);
@@ -460,26 +491,17 @@
             const crackElem = document.createElement('div');
             crackElem.className = 'ice-sharp-crack';
 
-            // 尺寸範圍 300px ~ 600px 之間
             const size = Math.floor(Math.random() * 300) + 300; 
             crackElem.style.left = (posX - size / 2) + 'px';
             crackElem.style.top = (posY - size / 2) + 'px';
 
             const rotation = Math.random() * 360;
 
-            // 👑 微調轉折：減少轉角次數，呈現乾淨俐落、自然的冰晶裂紋
             const svgContent = `
                 <svg width="${size}" height="${size}" viewBox="0 0 200 200" style="transform: rotate(${rotation}deg);">
-                    <!-- 主裂痕折線：適度減少轉角，避免過度繁複 -->
                     <polyline points="100,100 110,60 120,20 135,0" stroke="rgba(255, 255, 255, 0.98)" stroke-width="2.6" fill="none" stroke-linecap="round" stroke-linejoin="miter"/>
-                    
-                    <!-- 側邊大分岔 1 -->
                     <polyline points="100,100 65,75 40,60" stroke="rgba(255, 255, 255, 0.95)" stroke-width="2.2" fill="none" stroke-linecap="round" stroke-linejoin="miter"/>
-                    
-                    <!-- 側邊大分岔 2 -->
                     <polyline points="100,100 135,115 165,110" stroke="rgba(255, 255, 255, 0.95)" stroke-width="2.0" fill="none" stroke-linecap="round" stroke-linejoin="miter"/>
-
-                    <!-- 下方小副裂紋 -->
                     <polyline points="100,100 90,145 75,170" stroke="rgba(200, 240, 255, 0.9)" stroke-width="1.8" fill="none" stroke-linecap="round" stroke-linejoin="miter"/>
                 </svg>
             `;
@@ -494,55 +516,30 @@
             scheduleNextCrack();
         }
 
-        // 每 3 ~ 6 秒隨機裂開一次的計時器
         function scheduleNextCrack() {
-            const randomInterval = Math.floor(Math.random() * 3000) + 3000; // 3000ms ~ 6000ms (3~6秒)
+            const randomInterval = Math.floor(Math.random() * 3000) + 3000;
             setTimeout(spawnSharpCrack, randomInterval);
         }
 
-        // 初始化第一次排程
         scheduleNextCrack();
 
-        // 👑 檢查時間進度以動態切換更白的背景與介面
+        // 👑 透過切換 class 讓 CSS 處理平滑漸變
         function checkExtremeFreezing() {
             const elapsed = Date.now() - startTime;
             const body = document.body;
-            const dashboard = document.getElementById('main-dashboard');
-            const frostOverlay = document.getElementById('frost-overlay');
-            const clockFace = document.getElementById('clock-face');
-            const countdownBanner = document.getElementById('countdown-banner');
-            const cards = document.querySelectorAll('.card');
 
-            if (elapsed >= 56 * 1000) {
-                // 👑 56秒後：幾乎變成全白（極致白霜暴風雪世界）
-                body.style.background = 'radial-gradient(circle at center, #d0e8ff 0%, #a0c8f0 100%)';
-                dashboard.style.background = 'linear-gradient(135deg, rgba(220, 240, 255, 0.95) 0%, rgba(180, 215, 250, 0.98) 100%)';
-                dashboard.style.borderColor = 'rgba(255, 255, 255, 0.95)';
-                frostOverlay.style.opacity = '1';
-                frostOverlay.style.boxShadow = 'inset 0 0 300px rgba(255, 255, 255, 0.95), inset 0 0 600px rgba(200, 235, 255, 0.9)';
-                clockFace.style.background = 'radial-gradient(circle, rgba(210, 235, 255, 0.98) 0%, rgba(170, 205, 240, 0.99) 100%)';
-                clockFace.style.borderColor = 'rgba(255, 255, 255, 0.95)';
-                countdownBanner.style.background = 'rgba(210, 235, 255, 0.95)';
-                cards.forEach(c => {
-                    c.style.background = 'rgba(225, 242, 255, 0.95)';
-                    c.style.borderColor = 'rgba(255, 255, 255, 0.8)';
-                });
-            } else if (elapsed >= 36 * 1000) {
-                // 👑 36秒後：變得更白、冰霜加劇
-                body.style.background = 'radial-gradient(circle at center, #254b70 0%, #0d2138 100%)';
-                dashboard.style.background = 'linear-gradient(135deg, rgba(40, 85, 125, 0.85) 0%, rgba(10, 30, 55, 0.95) 100%)';
-                dashboard.style.borderColor = 'rgba(200, 240, 255, 0.85)';
-                frostOverlay.style.opacity = '0.9';
-                frostOverlay.style.boxShadow = 'inset 0 0 250px rgba(150, 225, 255, 0.7), inset 0 0 500px rgba(255, 255, 255, 0.6)';
-                clockFace.style.background = 'radial-gradient(circle, rgba(20, 50, 85, 0.96) 0%, rgba(5, 15, 30, 0.99) 100%)';
-                cards.forEach(c => {
-                    c.style.background = 'rgba(25, 55, 90, 0.92)';
-                    c.style.borderColor = 'rgba(180, 230, 255, 0.7)';
-                });
+            if (elapsed >= 58 * 1000) {
+                if (!body.classList.contains('stage-2')) {
+                    body.classList.remove('stage-1');
+                    body.classList.add('stage-2');
+                }
+            } else if (elapsed >= 40 * 1000) {
+                if (!body.classList.contains('stage-1')) {
+                    body.classList.add('stage-1');
+                }
             }
         }
 
-        // 每秒檢查一次極凍階段
         setInterval(checkExtremeFreezing, 1000);
 
         // 暴風雪特效
