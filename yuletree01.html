@@ -144,7 +144,6 @@
             margin-left: 350px;
         }
 
-        /* 樹頂星星會動 */
         .tree-star {
             position: absolute;
             top: 20px;
@@ -184,7 +183,6 @@
             z-index: 1;
         }
 
-        /* 樹上裝飾物件會搖擺 */
         .ornament-item {
             position: absolute;
             z-index: 8;
@@ -202,10 +200,10 @@
         .gift-box {
             width: 100%;
             height: 100%;
-            background: linear-gradient(135deg, #ef4444, #dc2626);
+            background: linear-gradient(135deg, #f43f5e, #fb7185);
             border-radius: 6px;
             position: relative;
-            box-shadow: 0 5px 12px rgba(0,0,0,0.4);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.5);
         }
         .gift-box::before {
             content: ''; position: absolute; top: 0; left: 40%; width: 20%; height: 100%; background: #fde047;
@@ -215,13 +213,13 @@
         }
 
         .sock {
-            width: 100%; height: 100%; background: #dc2626; border-radius: 0 0 45% 45%; position: relative;
+            width: 100%; height: 100%; background: #f43f5e; border-radius: 0 0 45% 45%; position: relative;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.4);
         }
         .sock::before {
-            content: ''; position: absolute; top: 0; left: -10%; width: 120%; height: 30%; background: #f8fafc; border-radius: 6px;
+            content: ''; position: absolute; top: 0; left: -10%; width: 120%; height: 30%; background: #ffffff; border-radius: 6px;
         }
 
-        /* 燈泡會閃爍發光 */
         .bling-light {
             border-radius: 50%;
             z-index: 7;
@@ -425,7 +423,7 @@
         }
         updateMeteor();
 
-        // 5. 樹上裝飾防重疊演算法（確保不雜亂重疊）
+        // 5. 樹上裝飾防重疊演算法（確保高亮度、避開深綠色）
         const container = document.getElementById('decorationsContainer');
         const lightColors = ['#38bdf8', '#7dd3fc', '#bae6fd', '#fde047', '#f87171', '#ffffff', '#c084fc', '#4ade80'];
         const placedDecorations = [];
@@ -437,7 +435,6 @@
             return true;
         }
 
-        // 生成禮物與襪子掛飾
         const specialTypes = ['gift', 'sock', 'star'];
         let attempts = 0;
         while (placedDecorations.length < 28 && attempts < 800) {
@@ -456,23 +453,36 @@
             item.style.animationDelay = `${Math.random() * 2}s`;
 
             const type = specialTypes[Math.floor(Math.random() * specialTypes.length)];
-            const size = Math.floor(Math.random() * 18) + 38;
+            const size = Math.floor(Math.random() * 24) + 32;
+
+            // 特別挑選與綠樹反差極大、高亮度的色相角度 (例如亮粉紅、亮黃、亮紫、亮藍、亮橘，避開暗色與綠色 70~160 度)
+            const vibrantHues = [0, 25, 45, 200, 275, 320, 350];
+            const chosenHue = vibrantHues[Math.floor(Math.random() * vibrantHues.length)];
 
             if (type === 'gift') {
-                const box = document.createElement('div'); box.classList.add('gift-box');
-                item.style.width = `${size}px`; item.style.height = `${size}px`; item.appendChild(box);
+                const box = document.createElement('div'); 
+                box.classList.add('gift-box');
+                box.style.filter = `hue-rotate(${chosenHue}deg) saturate(2.2) brightness(1.3)`;
+                item.style.width = `${size}px`; 
+                item.style.height = `${size}px`; 
+                item.appendChild(box);
             } else if (type === 'sock') {
-                const s = document.createElement('div'); s.classList.add('sock');
-                item.style.width = `${size * 0.8}px`; item.style.height = `${size * 1.1}px`; item.appendChild(s);
+                const s = document.createElement('div'); 
+                s.classList.add('sock');
+                s.style.filter = `hue-rotate(${chosenHue}deg) saturate(2.2) brightness(1.3)`;
+                item.style.width = `${size * 0.8}px`; 
+                item.style.height = `${size * 1.1}px`; 
+                item.appendChild(s);
             } else {
-                const st = document.createElement('div'); st.innerHTML = '★';
-                st.style.fontSize = `${size * 0.9}px`; st.style.color = '#fde047'; st.style.textShadow = '0 0 10px #facc15';
+                const st = document.createElement('div'); 
+                st.innerHTML = '★';
+                st.style.fontSize = `${size * 0.9}px`; 
+                st.style.filter = `hue-rotate(${chosenHue}deg) saturate(2) brightness(1.4) drop-shadow(0 0 12px #facc15)`;
                 item.appendChild(st);
             }
             container.appendChild(item);
         }
 
-        // 生成閃爍燈泡 (70 顆)
         let lightAttempts = 0, lightsCount = 0;
         while (lightsCount < 70 && lightAttempts < 1500) {
             lightAttempts++;
@@ -499,7 +509,7 @@
             lightsCount++;
         }
 
-        // 6. 底部動態掉落禮物
+        // 6. 底部動態掉落禮物（極高亮度、極大對比）
         const giftContainer = document.getElementById('giftContainer');
         let currentGifts = 0;
         const maxGifts = 80;
@@ -508,21 +518,29 @@
             if (currentGifts >= maxGifts) return;
             const gift = document.createElement('div');
             gift.className = 'gift-item';
-            gift.innerText = '🎁';
+            
+            const giftIcons = ['🎁', '📦', '🎀', '🧸'];
+            gift.innerText = giftIcons[Math.floor(Math.random() * giftIcons.length)];
+
+            // 強制過濾：避開綠色區間，只用超鮮豔、超亮眼的高飽和淺色 (利用色相與高亮度處理)
+            const contrastHues = [0, 20, 45, 195, 230, 280, 310, 340];
+            const randomHue = contrastHues[Math.floor(Math.random() * contrastHues.length)];
+            
+            gift.style.filter = `hue-rotate(${randomHue}deg) saturate(2.5) brightness(1.35) drop-shadow(0 10px 20px rgba(255,255,255,0.4))`;
 
             gift.style.left = `${Math.random() * 1980 + 90}px`;
             giftContainer.appendChild(gift);
 
             setTimeout(() => {
                 gift.style.opacity = '1';
-                gift.style.bottom = `${Math.random() * 130}px`;
-                gift.style.transform = `rotate(${Math.random() * 45 - 22.5}deg) scale(${0.65 + Math.random() * 0.5})`;
+                gift.style.bottom = `${Math.random() * 140}px`;
+                const randomScale = 0.5 + Math.random() * 0.8;
+                gift.style.transform = `rotate(${Math.random() * 60 - 30}deg) scale(${randomScale})`;
             }, 50);
 
             currentGifts++;
         }
 
-        // 24 秒後開始掉落禮物
         const delayCheck = setInterval(() => {
             if ((Date.now() - startTime) / 1000 >= 24) {
                 clearInterval(delayCheck);
@@ -530,7 +548,6 @@
             }
         }, 500);
 
-        // 38 秒自動跳轉
         setTimeout(function() {
             window.location.href = 'https://ddkleo.github.io/index/dpages03/walkbaby01/walkbaby00';
         }, 38000);
